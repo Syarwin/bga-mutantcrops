@@ -1,44 +1,26 @@
 {OVERALL_GAME_HEADER}
 
-<!-- 
---------
--- BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
--- MutantCrops implementation : © <Your name here> <Your email address here>
--- 
--- This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
--- See http://en.boardgamearena.com/#!doc/Studio for more information.
--------
-
-    mutantcrops_mutantcrops.tpl
-    
-    This is the HTML template of your game.
-    
-    Everything you are writing in this file will be displayed in the HTML page of your game user interface,
-    in the "main game zone" of the screen.
-    
-    You can use in this template:
-    _ variables, with the format {MY_VARIABLE_ELEMENT}.
-    _ HTML block, with the BEGIN/END format
-    
-    See your "view" PHP file to check how to set variables and control blocks
-    
-    Please REMOVE this comment before publishing your game on BGA
--->
-
-
-This is your game interface. You can edit this HTML in your ".tpl" file.
-
+<div id="board">
+  <div id="mutantcrops-grid">
+    <div id="crops-deck"></div>
+  </div>
+</div>
 
 <script type="text/javascript">
 
-// Javascript HTML templates
+var jstpl_crop=`<div class="crop crop-\${id}">
+  <div class="crop-background"></div>
+  <div class="crop-frame"></div>
+  <div class="crop-seeds">\${seeds}</div>
+  <div class="crop-name">\${name}</div>
+  <div class="crop-power-cost power-1">\${power1Cost}</div>
+  <div class="crop-power-gain power-1">+\${power1Effect}</div>
+  <div class="crop-power-cost power-2">\${power2Cost}</div>
+  <div class="crop-power-gain power-2">+\${power2Effect}</div>
 
-/*
-// Example:
-var jstpl_some_game_item='<div class="my_game_item" id="my_game_item_${MY_ITEM_ID}"></div>';
-
-*/
-
-</script>  
-
+  <div class="crop-power-cost power-3">\${power3Cost}</div>
+  <div class="crop-power-cost-type type-\${power3CostType}"></div>
+  <div class="crop-power-effect">\${power3Effect}</div>
+</div>`;
+</script>
 {OVERALL_GAME_FOOTER}
