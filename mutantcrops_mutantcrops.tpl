@@ -3,12 +3,27 @@
 <div id="board">
   <div id="mutantcrops-grid">
     <div id="crops-deck"></div>
+
+    <div id="field-0" class="field stage-1"><div></div><div></div></div>
+    <div id="field-1" class="field stage-1"><div></div><div></div></div>
+    <div id="field-2" class="field stage-1"><div></div><div></div></div>
+    <div id="field-3" class="field stage-1"><div></div><div></div></div>
+    <div id="field-4" class="field stage-1"><div></div><div></div></div>
+    <div id="field-5" class="field stage-1"><div></div><div></div></div>
+
+    <div id="field-6" class="field stage-2"></div>
+    <div id="field-7" class="field stage-2"></div>
+    <div id="field-8" class="field stage-2"></div>
+
+    <div id="field-9" class="field stage-3"></div>
+    <div id="field-10" class="field stage-3"></div>
+    <div id="field-11" class="field stage-3"></div>
   </div>
 </div>
 
 <script type="text/javascript">
 
-var jstpl_crop=`<div class="crop crop-\${id}">
+var jstpl_crop=`<div class="crop crop-\${id}" id="crop-\${index}">
   <div class="crop-background"></div>
   <div class="crop-frame"></div>
   <div class="crop-seeds">\${seeds}</div>

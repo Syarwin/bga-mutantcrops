@@ -36,8 +36,9 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], functi
       var _this = this;
       debug('SETUP', gamedatas);
 
-      gamedatas.crops.forEach(function(crop){
+      gamedatas.crops.forEach(function(crop, id){
         var data = gamedatas.cropsData[crop];
+        data.index = id;
         data.power3Effect = data.power3Effect.replace("COINS",  "<span class='coin'></span>");
         data.power3Effect = data.power3Effect.replace("WATERS", "<span class='water'></span>");
         data.power3Effect = data.power3Effect.replace("FOODS",  "<span class='food'></span>");
