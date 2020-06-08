@@ -245,3 +245,195 @@ $this->crops = [
     'power3Effect' => clienttranslate('At the end of game, gain 2 COINS for every 3 WATERS remaining in your personal supply.')
   ],
 ];
+
+
+
+$this->fields = [
+  [
+    'id' => 0,
+    'stage' => 1,
+    'top' => [
+      'type' => 'A',
+      'effect' => "",
+    ],
+    'bottom' => [
+      'type' => 'B',
+      'effect' => clienttranslate("SOW"),
+    ]
+  ],
+  [
+    'id' => 1,
+    'stage' => 1,
+    'top' => [
+      'type' => 'A',
+      'effect' => "",
+    ],
+    'bottom' => [
+      'type' => 'C',
+      'effect' => "",
+    ]
+  ],
+  [
+    'id' => 2,
+    'stage' => 1,
+    'top' => [
+      'type' => 'A',
+      'effect' => "",
+    ],
+    'bottom' => [
+      'type' => 'D',
+      'effect' => "",
+    ]
+  ],
+  [
+    'id' => 3,
+    'stage' => 1,
+    'top' => [
+      'type' => 'A',
+      'effect' => "",
+    ],
+    'bottom' => [
+      'type' => 'E',
+      'effect' => "",
+    ]
+  ],
+  [
+    'id' => 4,
+    'stage' => 1,
+    'top' => [
+      'type' => 'A',
+      'effect' => "",
+    ],
+    'bottom' => [
+      'type' => 'F',
+      'effect' => clienttranslate("& First Player"),
+    ]
+  ],
+  [
+    'id' => 5,
+    'stage' => 1,
+    'top' => [
+      'type' => 'A',
+      'effect' => "",
+    ],
+    'bottom' => [
+      'type' => 'G',
+      'effect' => clienttranslate("& Dual Actions"),
+    ]
+  ],
+
+
+  [
+    'id' => 6,
+    'stage' => 2,
+    'top' => [
+      'type' => 'H',
+      'effect' => "",
+    ],
+    'bottom' => [
+      'type' => 'I',
+      'effect' => clienttranslate("WATER"),
+    ]
+  ],
+  [
+    'id' => 7,
+    'stage' => 2,
+    'top' => [
+      'type' => 'H',
+      'effect' => clienttranslate("WATER"),
+    ],
+    'bottom' => [
+      'type' => 'I',
+      'effect' => "",
+    ]
+  ],
+  [
+    'id' => 8,
+    'stage' => 2,
+    'top' => [
+      'type' => 'H',
+      'effect' => clienttranslate("SOW x2"),
+    ],
+    'bottom' => [
+      'type' => 'I',
+      'effect' => clienttranslate("FEED"),
+    ]
+  ],
+
+
+  [
+    'id' => 9,
+    'stage' => 3,
+    'top' => [
+      'type' => 'J',
+      'effect' => "",
+    ],
+    'bottom' => [
+      'type' => 'K',
+      'effect' => clienttranslate("WATER"),
+    ]
+  ],
+  [
+    'id' => 10,
+    'stage' => 3,
+    'top' => [
+      'type' => 'L',
+      'effect' => clienttranslate("Water & Fedd"),
+    ],
+    'bottom' => [
+      'type' => 'M',
+      'effect' => clienttranslate("& Dual Action")
+    ]
+  ],
+  [
+    'id' => 11,
+    'stage' => 3,
+    'top' => [
+      'type' => 'N',
+      'effect' => clienttranslate("SOW x2"),
+    ],
+    'bottom' => [
+      'type' => 'O',
+      'effect' => clienttranslate("Exchange"),
+    ]
+  ],
+
+
+  [
+    'id' => 12,
+    'stage' => 3,
+    'top' => [
+      'type' => 'W',
+      'effect' => "",
+    ],
+    'bottom' => [
+      'type' => 'V',
+      'effect' => "",
+    ]
+  ],
+  [
+    'id' => 13,
+    'stage' => 3,
+    'top' => [
+      'type' => 'W',
+      'effect' => "",
+    ],
+    'bottom' => [
+      'type' => 'X',
+      'effect' => "",
+    ]
+  ],
+  [
+    'id' => 14,
+    'stage' => 3,
+    'top' => [
+      'type' => 'Y',
+      'effect' => "",
+    ],
+    'bottom' => [
+      'type' => 'Z',
+      'effect' => "",
+    ]
+  ],
+
+];

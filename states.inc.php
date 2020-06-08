@@ -101,6 +101,7 @@ $machinestates = [
       'zombiePass' => ST_END_OF_TURN,
       'endturn'    => ST_END_OF_TURN,
       'endgame'    => ST_GAME_END,
+      'farmerAssigned' => ST_NEXT_PLAYER,
     ],
   ],
 

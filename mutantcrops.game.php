@@ -20,6 +20,8 @@ require_once( APP_GAMEMODULE_PATH.'module/table/table.game.php' );
 require_once('modules/constants.inc.php');
 require_once("modules/MutantCropsCards.class.php");
 require_once("modules/MutantCropsLog.class.php");
+require_once("modules/MutantCropsPlayer.class.php");
+require_once("modules/PlayerManager.class.php");
 
 
 class MutantCrops extends Table
@@ -36,6 +38,7 @@ class MutantCrops extends Table
     // Initialize logger, board and cards
     $this->log   = new MutantCropsLog($this);
     $this->cards = new MutantCropsCards($this);
+    $this->playerManager = new PlayerManager($this);
   }
 
   protected function getGameName()
@@ -56,12 +59,12 @@ class MutantCrops extends Table
     // Create players
     self::DbQuery('DELETE FROM player');
     $gameInfos = self::getGameinfos();
-    $sql = 'INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar) VALUES ';
+    $sql = 'INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar, coins, seeds, water, food) VALUES ';
     $values = [];
     $i = 0;
     foreach ($players as $pId => $player) {
       $color = $gameInfos['player_colors'][$i++];
-      $values[] = "('" . $pId . "','$color','" . $player['player_canal'] . "','" . addslashes($player['player_name']) . "','" . addslashes($player['player_avatar']) . "')";
+      $values[] = "('" . $pId . "','$color','" . $player['player_canal'] . "','" . addslashes($player['player_name']) . "','" . addslashes($player['player_avatar']) . "', 0,0,0,0)";
     }
     self::DbQuery($sql . implode($values, ','));
     self::reloadPlayersBasicInfos();
@@ -87,6 +90,8 @@ class MutantCrops extends Table
     return [
 			'cropsData' => $this->crops,
 			'crops' => $this->cards->getCropsOnBoard(),
+      'fields' => $this->cards->getFieldsOnBoard(),
+      'fplayers' => $this->playerManager->getUiData(),
     ];
   }
 
@@ -181,10 +186,20 @@ return 0.3;
   /////////////////////////////////////////
 
   /*
-   * argPlayerBuild: give the list of accessible unnocupied spaces for builds
+   * argPlayerAssign: give the list of accessible unnocupied spaces for builds
    */
   public function argPlayerAssign()
   {
+    $arg = [
+      'location' => 'board',
+      'availableLocations' => $this->cards->getAvailableLocations(),
+    ];
+
+    $player = $this->playerManager->getPlayer();
+    if(count($player->getFarmersOnBoard()) < count($player->getFarmers()))
+      $arg['location'] = 'hand';
+
+    return $arg;
   }
 
 
@@ -192,8 +207,35 @@ return 0.3;
   /*
 	 * Build : TODO
    */
-  public function playerAssign()
+  public function playerAssign($farmerId, $locationId)
   {
+    self::checkAction('assign');
+    $arg = $this->argPlayerAssign();
+
+    // Can't move a farmer on board unless all the farmers are already on the board
+    if($arg['location'] == 'hand' && $farmerId < count($this->playerManager->getPlayer()->getFarmersOnBoard()) ){
+      throw new BgaUserException(_("You have to assign one of the farmers in your hand"));
+    }
+
+    // Make sure the location is free
+    if(!in_array($locationId, $arg['availableLocations'])){
+      throw new BgaUserException(_("This location is not free"));
+    }
+
+    // Update position
+    $playerId = self::getCurrentPlayerId();
+    self::DbQuery("UPDATE player SET farmer_$farmerId = '$locationId' WHERE player_id = '$playerId'");
+    self::notifyAllPlayers('farmerAssigned', clienttranslate('${player_name} assigns one of its farmers'), [
+      'i18n' => [],
+      'playerId' => $playerId,
+      'farmerId' => $farmerId,
+      'locationId' => $locationId,
+      'player_name' => self::getActivePlayerName(),
+    ]);
+
+    // TODO : handle effect
+
+    $this->gamestate->nextState('farmerAssigned');
   }
 
 

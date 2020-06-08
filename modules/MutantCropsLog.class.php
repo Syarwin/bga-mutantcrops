@@ -59,4 +59,10 @@ class MutantCropsLog extends APP_GameClass
     //////////   Getters   //////////
     /////////////////////////////////
     /////////////////////////////////
+    public function getAction($action)
+    {
+      $log = self::getObjectFromDb("SELECT * FROM log WHERE `action` = '$action'");
+      return json_decode($log['action_arg'], true);
+    }
+
 }

@@ -25,7 +25,25 @@ class MutantCropsCards extends APP_GameClass
     }
     $this->crops->createCards($crops, 'deck');
     $this->crops->shuffle('deck');
-    $this->crops->pickCardsForLocation(count($players) == 4? 3 : 3, 'deck', 'board');
+    $this->crops->pickCardsForLocation(count($players) == 4? 4 : 3, 'deck', 'board');
+
+
+    // Create fields
+    $allFields = [];
+    for($stage = 1; $stage <= 3; $stage++){
+      $fields = array_values(array_map(function($field){ return $field['id']; }, array_filter($this->game->fields, function($field) use ($stage){
+        return $field['stage'] == $stage && $field['id'] < 12; // TODO : handle extension
+      })));
+
+      if($stage == 1)
+        $allFields = $fields;
+      else {
+        shuffle($fields);
+        $allFields = array_merge($allFields,  array_slice($fields, 0, 3));
+      }
+    }
+
+    $this->game->log->addAction("fields", ['fields' => $allFields]);
   }
 
 
@@ -33,5 +51,29 @@ class MutantCropsCards extends APP_GameClass
   public function getCropsOnBoard()
   {
     return array_values(array_map(function($card){ return $card['type']; }, $this->crops->getCardsInLocation("board")));
+  }
+
+
+  public function getFieldsOnBoard()
+  {
+    $fields = $this->game->log->getAction("fields");
+    $round = (int) $this->game->getGamestateValue('currentRound');
+    return array_values(array_slice($fields['fields'], 0, 6 + $round));
+  }
+
+
+  public function getAvailableLocations()
+  {
+    $fields = $this->getFieldsOnBoard();
+    $locations = [];
+    foreach($fields as $fieldId){
+      $locations[] = 2*$fieldId;
+      $locations[] = 2*$fieldId + 1;
+    }
+
+    $farmersLocations = $this->game->playerManager->getFarmersLocations();
+    return array_values(array_filter($locations, function($location) use ($farmersLocations){
+      return !in_array($location, $farmersLocations);
+    }));
   }
 }

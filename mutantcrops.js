@@ -36,6 +36,18 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], functi
       var _this = this;
       debug('SETUP', gamedatas);
 
+      // Add meeples and tokens
+      gamedatas.fplayers.forEach(function(player){
+        dojo.place( _this.format_block( 'jstpl_player_panel', player) , 'overall_player_board_' + player.id );
+
+        // Meeples
+        player.farmers.forEach(function(location, id){
+          var meeple = _this.format_block( 'jstpl_player_meeple', { playerId:player.id, farmerId:id, no:player.no });
+          dojo.place(meeple , location == null? ('tokens-container-' + player.id) : ('location-' + location) );
+        });
+      });
+
+      // Display crops
       gamedatas.crops.forEach(function(crop, id){
         var data = gamedatas.cropsData[crop];
         data.index = id;
@@ -44,6 +56,12 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], functi
         data.power3Effect = data.power3Effect.replace("FOODS",  "<span class='food'></span>");
         data.power3Effect = data.power3Effect.replace("SEEDS",  "<span class='seed'></span>");
         dojo.place( _this.format_block( 'jstpl_crop', data) , 'mutantcrops-grid' );
+        _this.addTooltipHtml('crop-' + id, _this.format_block( 'jstpl_crop', data), 0);
+      });
+
+      // Display fields (only the ones visible at that stage)
+      gamedatas.fields.forEach(function(fieldId, index){
+        dojo.addClass('field-' + index, 'field-' + fieldId);
       });
 
        // Setup game notifications
@@ -51,9 +69,14 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], functi
      },
 
 
+     ///////////////////////////////////////
+     ////////  Game & client states ////////
+     ///////////////////////////////////////
+
      /*
       * onEnteringState:
       * 	this method is called each time we are entering into a new game state.
+      *
       * params:
       *  - str stateName : name of the state we are entering
       *  - mixed args : additional information
@@ -61,13 +84,9 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], functi
      onEnteringState: function (stateName, args) {
        debug('Entering state: ' + stateName, args);
 
-/*
        // Stop here if it's not the current player's turn for some states
-       if (["playerUsePower", "playerPlaceWorker", "playerMove", "playerBuild", "gameEnd"].includes(stateName)) {
-         this.focusContainer('board');
-         if (!this.isCurrentPlayerActive()) return;
-       }
-*/
+       if (["playerAssign"].includes(stateName) && !this.isCurrentPlayerActive())
+         return;
 
        // Call appropriate method
        var methodName = "onEnteringState" + stateName.charAt(0).toUpperCase() + stateName.slice(1);
@@ -76,163 +95,189 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], functi
      },
 
 
-        // onLeavingState: this method is called each time we are leaving a game state.
-        //                 You can use this method to perform some user interface changes at this moment.
-        //
-        onLeavingState: function( stateName )
-        {
-            console.log( 'Leaving state: '+stateName );
-
-            switch( stateName )
-            {
-
-            /* Example:
-
-            case 'myGameState':
-
-                // Hide the HTML block we are displaying only during this game state
-                dojo.style( 'my_html_block_id', 'display', 'none' );
-
-                break;
-           */
+     /*
+      * onLeavingState:
+      * 	this method is called each time we are leaving a game state.
+      *
+      * params:
+      *  - str stateName : name of the state we are leaving
+      */
+     onLeavingState: function (stateName) {
+       debug('Leaving state: ' + stateName);
 
 
-            case 'dummmy':
-                break;
-            }
-        },
+       this.clearPossible();
+     },
 
-        // onUpdateActionButtons: in this method you can manage "action buttons" that are displayed in the
-        //                        action status bar (ie: the HTML links in the status bar).
-        //
-        onUpdateActionButtons: function( stateName, args )
-        {
-            console.log( 'onUpdateActionButtons: '+stateName );
 
-            if( this.isCurrentPlayerActive() )
-            {
-                switch( stateName )
-                {
+
+     /*
+      * onUpdateActionButtons:
+      * 	called by BGA framework before onEnteringState
+      *  in this method you can manage "action buttons" that are displayed in the action status bar (ie: the HTML links in the status bar).
+      */
+     onUpdateActionButtons: function (stateName, args) {
+       debug('Update action buttons: ' + stateName, args); // Make sure it the player's turn
+
+       if (!this.isCurrentPlayerActive())
+         return;
+
 /*
-                 Example:
+       if ((stateName == "playerMove" || stateName == "playerBuild" || stateName == "playerUsePower")) {
+         if (args.skippable) {
+           this.addActionButton('buttonSkip', _('Skip'), 'onClickSkip', null, false, 'gray');
+         }
 
-                 case 'myGameState':
-
-                    // Add 3 action buttons in the action status bar:
-
-                    this.addActionButton( 'button_1_id', _('Button 1 label'), 'onMyMethodToCall1' );
-                    this.addActionButton( 'button_2_id', _('Button 2 label'), 'onMyMethodToCall2' );
-                    this.addActionButton( 'button_3_id', _('Button 3 label'), 'onMyMethodToCall3' );
-                    break;
+         if (args.cancelable) {
+           this.addActionButton('buttonCancel', _('Restart turn'), 'onClickCancel', null, false, 'gray');
+         }
+       }
 */
-                }
-            }
-        },
-
-        ///////////////////////////////////////////////////
-        //// Utility methods
-
-        /*
-
-            Here, you can defines some utility methods that you can use everywhere in your javascript
-            script.
-
-        */
+     },
 
 
-        ///////////////////////////////////////////////////
-        //// Player's action
-
-        /*
-
-            Here, you are defining methods to handle player's action (ex: results of mouse click on
-            game objects).
-
-            Most of the time, these methods:
-            _ check the action is possible at this game state.
-            _ make a call to the game server
-
-        */
-
-        /* Example:
-
-        onMyMethodToCall1: function( evt )
-        {
-            console.log( 'onMyMethodToCall1' );
-
-            // Preventing default browser reaction
-            dojo.stopEvent( evt );
-
-            // Check that this action is possible (see "possibleactions" in states.inc.php)
-            if( ! this.checkAction( 'myAction' ) )
-            {   return; }
-
-            this.ajaxcall( "/mutantcrops/mutantcrops/myAction.html", {
-                                                                    lock: true,
-                                                                    myArgument1: arg1,
-                                                                    myArgument2: arg2,
-                                                                    ...
-                                                                 },
-                         this, function( result ) {
-
-                            // What to do after the server call if it succeeded
-                            // (most of the time: nothing)
-
-                         }, function( is_error) {
-
-                            // What to do after the server call in anyway (success or failure)
-                            // (most of the time: nothing)
-
-                         } );
-        },
-
-        */
+     /*
+ 		 * TODO description
+ 		 */
+     takeAction: function (action, data, callback) {
+       data = data || {};
+       data.lock = true;
+       callback = callback || function (res) { };
+       this.ajaxcall("/mutantcrops/mutantcrops/" + action + ".html", data, this, callback);
+     },
 
 
-        ///////////////////////////////////////////////////
-        //// Reaction to cometD notifications
+     /*
+      * clearPossible:
+      * 	clear every clickable space and any selected worker
+      */
+     clearPossible: function clearPossible() {
+       this.removeActionButtons();
+       this.onUpdateActionButtons(this.gamedatas.gamestate.name, this.gamedatas.gamestate.args);
 
-        /*
-            setupNotifications:
+       this._selectedFarmer = null;
+       dojo.query(".meeple").removeClass("selectable selected");
+       dojo.query(".field > div").removeClass("selectable");
+     },
 
-            In this method, you associate each of your game notifications with your local method to handle it.
+     /////////////////////////////////
+     /////////////////////////////////
+     /////////    Assign    //////////
+     /////////////////////////////////
+     /////////////////////////////////
 
-            Note: game notification names correspond to "notifyAllPlayers" and "notifyPlayer" calls in
-                  your mutantcrops.game.php file.
+     /*
+      * playerAssign: TODO
+      */
+     onEnteringStatePlayerAssign: function (args) {
+       var _this = this;
 
-        */
-        setupNotifications: function()
-        {
-            console.log( 'notifications subscriptions setup' );
+       this._availableLocations = args.availableLocations;
+       if(args.location == "hand"){
+         var meeple = dojo.query("#overall_player_board_" + this.getCurrentPlayerId() + " .meeple")[0];
+         this.onClickFarmer(meeple.getAttribute('data-farmerId'));
+       }
+       /*
+       else {
 
-            // TODO: here, associate your game notifications with local methods
+       }
+       */
+     },
 
-            // Example 1: standard notification handling
-            // dojo.subscribe( 'cardPlayed', this, "notif_cardPlayed" );
 
-            // Example 2: standard notification handling + tell the user interface to wait
-            //            during 3 seconds after calling the method in order to let the players
-            //            see what is happening in the game.
-            // dojo.subscribe( 'cardPlayed', this, "notif_cardPlayed" );
-            // this.notifqueue.setSynchronous( 'cardPlayed', 3000 );
-            //
-        },
 
-        // TODO: from this point and below, you can write your game notifications handling methods
+     /*
+      * onClickFarmer: TODO
+      */
+     onClickFarmer: function(farmerId){
+       var _this = this;
 
-        /*
-        Example:
+       this._selectedFarmer = farmerId;
+       dojo.query(".meeple").removeClass("selectable");
+       dojo.addClass("meeple-" + this.getActivePlayerId() + "-" + farmerId, "selected");
 
-        notif_cardPlayed: function( notif )
-        {
-            console.log( 'notif_cardPlayed' );
-            console.log( notif );
+       this._availableLocations.forEach(function(locationId){
+         dojo.addClass('location-' + locationId, 'selectable');
+         dojo.connect($('location-' + locationId), 'onclick', function(){ _this.onClickLocation(locationId); });
+       });
+     },
 
-            // Note: notif.args contains the arguments specified during you "notifyAllPlayers" / "notifyPlayer" PHP call
 
-            // TODO: play the card in the user interface.
-        },
+     /*
+      * onClickLocation: TODO
+      */
+     onClickLocation: function(locationId){
+       if (!this.checkAction('assign')) return false;
 
-        */
+       this.takeAction('assign', {
+         farmerId: this._selectedFarmer,
+         locationId: locationId,
+       });
+       this.clearPossible();
+     },
+
+
+     /*
+      * notif_farmerAssigned: TODO
+      */
+     notif_farmerAssigned: function (n) {
+       debug('Notif: farmer assigned', n.args);
+
+       var _this = this;
+       var meeple = "meeple-" + n.args.playerId + "-" + n.args.farmerId;
+       var location = "location-" + n.args.locationId;
+
+       this.attachToNewParent(meeple, location);
+       this.slide(meeple, location, 1200);
+     },
+
+
+     ///////////////////////////////////////
+     ////////    Utility methods    ////////
+     ///////////////////////////////////////
+
+     /*
+      * // TODO:
+      */
+     slide: function slide(sourceId, targetId, duration, delay) {
+       var _this = this;
+       return new Promise(function (resolve, reject) {
+         var animation = _this.slideToObject(sourceId, targetId, duration, delay);
+         dojo.connect(animation, 'onEnd', resolve);
+         animation.play();
+       });
+     },
+
+
+     ///////////////////////////////////////////////////
+     //////   Reaction to cometD notifications   ///////
+     ///////////////////////////////////////////////////
+
+     /*
+      * setupNotifications:
+      *  In this method, you associate each of your game notifications with your local method to handle it.
+      *	Note: game notification names correspond to "notifyAllPlayers" and "notifyPlayer" in the santorini.game.php file.
+      */
+     setupNotifications: function () {
+       var notifs = [
+         ['farmerAssigned', 1000],
+       ];
+/*
+         ['cancel', 1000],
+         ['automatic', 1000],
+         ['addOffer', 500],
+         ['removeOffer', 500],
+         ['powerAdded', 1200],
+         ['workerPlaced', 1000],
+         ['workerMoved', 1600],
+       ];
+*/
+
+       var _this = this;
+       notifs.forEach(function (notif) {
+         dojo.subscribe(notif[0], _this, "notif_" + notif[0]);
+         _this.notifqueue.setSynchronous(notif[0], notif[1]);
+       });
+     }
    });
 });

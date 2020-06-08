@@ -31,7 +31,6 @@
 
 :root {
   --spacing: 12px;
-  --min-card-width: 10vw;
   --ratio-percent: 155.55%;
   --nbr-crops:16;
 }
@@ -43,6 +42,7 @@ div#board {
 }
 
 div#mutantcrops-grid {
+  --min-card-width: 8vw;
   width:75%;
   display: grid;
   grid-template-columns: repeat(6, minmax(var(--min-card-width), 1fr));
@@ -50,6 +50,11 @@ div#mutantcrops-grid {
   grid-template-rows: repeat(3, 1fr);
   grid-row-gap: var(--spacing);
 }
+
+.dijitTooltip {
+  --min-card-width: 20vw;
+}
+
 
 div#mutantcrops-grid div#crops-deck,
 div#mutantcrops-grid .field {
@@ -69,20 +74,25 @@ div#mutantcrops-grid div#crops-deck {
   background-image:url("img/crops-back.jpg");
 }
 
-div#mutantcrops-grid div.crop {
+div.crop {
   grid-row: 1;
   width:100%;
   height:0%;
   position:relative;
   padding-bottom: var(--ratio-percent);
 }
+.dijitTooltip .crop {
+  width:var(--min-card-width);
+}
 
-div#mutantcrops-grid div#crop-0{  grid-column: 3; }
+
+div#mutantcrops-grid div#crop-0 {  grid-column: 3; }
 div#mutantcrops-grid div#crop-1 {  grid-column: 4; }
 div#mutantcrops-grid div#crop-2 {  grid-column: 5; }
+div#mutantcrops-grid div#crop-3 {  grid-column: 6; }
 
 
-div#mutantcrops-grid div.crop div.crop-frame {
+div.crop div.crop-frame {
   position:absolute;
   top:0;
   left:0;
@@ -96,7 +106,7 @@ div#mutantcrops-grid div.crop div.crop-frame {
 }
 
 
-div#mutantcrops-grid div.crop div.crop-background {
+div.crop div.crop-background {
   position: absolute;
   top: 8.5%;
   left: 0;
@@ -107,31 +117,31 @@ div#mutantcrops-grid div.crop div.crop-background {
   background-size: 1600%;
 }
 
-div#mutantcrops-grid div.crop.crop-0 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 0) 0%; }
-div#mutantcrops-grid div.crop.crop-1 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 1) 0%; }
-div#mutantcrops-grid div.crop.crop-2 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 2) 0%; }
-div#mutantcrops-grid div.crop.crop-3 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 3) 0%; }
-div#mutantcrops-grid div.crop.crop-4 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 4) 0%; }
-div#mutantcrops-grid div.crop.crop-5 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 5) 0%; }
-div#mutantcrops-grid div.crop.crop-6 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 6) 0%; }
-div#mutantcrops-grid div.crop.crop-7 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 7) 0%; }
-div#mutantcrops-grid div.crop.crop-8 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 8) 0%; }
-div#mutantcrops-grid div.crop.crop-9 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 9) 0%; }
-div#mutantcrops-grid div.crop.crop-10 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 10) 0%; }
-div#mutantcrops-grid div.crop.crop-11 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 11) 0%; }
-div#mutantcrops-grid div.crop.crop-12 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 12) 0%; }
-div#mutantcrops-grid div.crop.crop-13 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 13) 0%; }
-div#mutantcrops-grid div.crop.crop-14 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 14) 0%; }
-div#mutantcrops-grid div.crop.crop-15 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 15) 0%; }
+div.crop.crop-0 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 0) 0%; }
+div.crop.crop-1 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 1) 0%; }
+div.crop.crop-2 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 2) 0%; }
+div.crop.crop-3 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 3) 0%; }
+div.crop.crop-4 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 4) 0%; }
+div.crop.crop-5 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 5) 0%; }
+div.crop.crop-6 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 6) 0%; }
+div.crop.crop-7 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 7) 0%; }
+div.crop.crop-8 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 8) 0%; }
+div.crop.crop-9 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 9) 0%; }
+div.crop.crop-10 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 10) 0%; }
+div.crop.crop-11 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 11) 0%; }
+div.crop.crop-12 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 12) 0%; }
+div.crop.crop-13 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 13) 0%; }
+div.crop.crop-14 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 14) 0%; }
+div.crop.crop-15 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 15) 0%; }
 
 
-div#mutantcrops-grid div.crop div.crop-name,
-div#mutantcrops-grid div.crop div.crop-seeds,
-div#mutantcrops-grid div.crop div.crop-power-cost,
-div#mutantcrops-grid div.crop div.crop-power-gain {
+div.crop div.crop-name,
+div.crop div.crop-seeds,
+div.crop div.crop-power-cost,
+div.crop div.crop-power-gain {
   position: absolute;
   z-index: 3;
-  font-size: 1.6vw;
+  font-size: calc(var(--min-card-width) * 1.6 / 10);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -142,29 +152,29 @@ div#mutantcrops-grid div.crop div.crop-power-gain {
 }
 
 
-div#mutantcrops-grid div.crop div.crop-seeds {
+div.crop div.crop-seeds {
   top: 4%;
   left: 7%;
   width: 9%;
   height: 9%;
 }
 
-div#mutantcrops-grid div.crop div.crop-name {
+div.crop div.crop-name {
   top: 4%;
   left: 30%;
   width: 70%;
   height: 9%;
 }
 
-div#mutantcrops-grid div.crop div.crop-power-cost {
+div.crop div.crop-power-cost {
   top: 71%;
   left: 6%;
   width: 9%;
   height: 9%;
 }
-div#mutantcrops-grid div.crop div.crop-power-cost.power-2 { left: 51%; }
+div.crop div.crop-power-cost.power-2 { left: 51%; }
 
-div#mutantcrops-grid div.crop div.crop-power-gain {
+div.crop div.crop-power-gain {
   top: 70.7%;
   left: 30%;
   width: 9%;
@@ -172,18 +182,18 @@ div#mutantcrops-grid div.crop div.crop-power-gain {
   color:rgb(101, 49, 25);
   text-shadow: none;
   font-family: "BurbankBigCondensedBold";
-  font-size:1.3vw;
+  font-size:calc(var(--min-card-width) * 1.3 / 10);
 }
-div#mutantcrops-grid div.crop div.crop-power-gain.power-2 { left: 76%; }
+div.crop div.crop-power-gain.power-2 { left: 76%; }
 
 
-div#mutantcrops-grid div.crop div.crop-power-cost.power-3 {
+div.crop div.crop-power-cost.power-3 {
   top: 86%;
   left: 4%;
   z-index: 4;
 }
 
-div#mutantcrops-grid div.crop div.crop-power-cost-type {
+div.crop div.crop-power-cost-type {
   position: absolute;
   top: 84.5%;
   left: 11%;
@@ -197,23 +207,26 @@ div#mutantcrops-grid div.crop div.crop-power-cost-type {
   padding-bottom: 15%;
 }
 
-div#mutantcrops-grid div.crop div.crop-power-cost-type.type-F { background-position:33.33% 0%; }
-div#mutantcrops-grid div.crop div.crop-power-cost-type.type-W { background-position:100% 0%; }
+div.crop div.crop-power-cost-type.type-F { background-position:33.33% 0%; }
+div.crop div.crop-power-cost-type.type-W { background-position:100% 0%; }
 
 
-div#mutantcrops-grid div.crop div.crop-power-effect {
+div.crop div.crop-power-effect {
   position: absolute;
   top: 83%;
   left: 29%;
   z-index: 3;
   width: 62%;
   height: 14%;
-  font-family: BurbankBigCondensedMedium;
-  font-size: 0.66vw;
+  font-family: "BurbankBigCondensedMedium";
+  font-size: calc(var(--min-card-width) * 0.84 / 10);
   color: #5e3313;
 }
+.dijitTooltip div.crop div.crop-power-effect {
+  font-size: calc(var(--min-card-width) * 0.66 / 10);
+}
 
-div#mutantcrops-grid div.crop div.crop-power-effect span {
+div.crop div.crop-power-effect span {
   display: inline-block;
   background-image: url("img/resources.png");
   background-size: cover;
@@ -225,10 +238,10 @@ div#mutantcrops-grid div.crop div.crop-power-effect span {
   border: 2px solid rgb(101, 49, 25);
 }
 
-div#mutantcrops-grid div.crop div.crop-power-effect span.coin { background-position:0% 0%; }
-div#mutantcrops-grid div.crop div.crop-power-effect span.food { background-position:33.33% 0%; }
-div#mutantcrops-grid div.crop div.crop-power-effect span.seed { background-position:66.66% 0%; }
-div#mutantcrops-grid div.crop div.crop-power-effect span.water { background-position:100% 0%; }
+div.crop div.crop-power-effect span.coin { background-position:0% 0%; }
+div.crop div.crop-power-effect span.food { background-position:33.33% 0%; }
+div.crop div.crop-power-effect span.seed { background-position:67.5% 0%; }
+div.crop div.crop-power-effect span.water { background-position:100% 0%; }
 
 
 
@@ -259,14 +272,23 @@ div#mutantcrops-grid .field > div {
   width:90%;
   height:40%;
   left:5%;
-  cursor:pointer;
   border:2px dotted white;
   border-radius: 5%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 div#mutantcrops-grid .field > div:nth-child(1) { top:2%; }
 div#mutantcrops-grid .field > div:nth-child(2) { top:51%; }
 
-div#mutantcrops-grid .field div:hover {
+
+div#mutantcrops-grid .field > div.selectable {
+  background-color:rgba(255,255,255,0.2);
+  cursor:pointer;
+}
+
+div#mutantcrops-grid .field > div.selectable:hover {
+  background-color:rgba(255,255,255,0.5);
   border: 3px solid red;
 }
 
@@ -274,9 +296,110 @@ div#mutantcrops-grid .stage-1 { background-position:calc(100% / var(--offsetFiel
 div#mutantcrops-grid .stage-2 { background-position:calc(100% / var(--offsetFieldBackground) * 1) 0%; }
 div#mutantcrops-grid .stage-3 { background-position:calc(100% / var(--offsetFieldBackground) * 2) 0%; }
 
-div#mutantcrops-grid div#field-0 { background-position:calc(100% / var(--offsetFieldBackground) * 3) 0%; }
-div#mutantcrops-grid div#field-1 { background-position:calc(100% / var(--offsetFieldBackground) * 4) 0%; }
-div#mutantcrops-grid div#field-2 { background-position:calc(100% / var(--offsetFieldBackground) * 5) 0%; }
-div#mutantcrops-grid div#field-3 { background-position:calc(100% / var(--offsetFieldBackground) * 6) 0%; }
-div#mutantcrops-grid div#field-4 { background-position:calc(100% / var(--offsetFieldBackground) * 7) 0%; }
-div#mutantcrops-grid div#field-5 { background-position:calc(100% / var(--offsetFieldBackground) * 8) 0%; }
+div#mutantcrops-grid .field.field-0 { background-position:calc(100% / var(--offsetFieldBackground) * 3) 0%; }
+div#mutantcrops-grid .field.field-1 { background-position:calc(100% / var(--offsetFieldBackground) * 4) 0%; }
+div#mutantcrops-grid .field.field-2 { background-position:calc(100% / var(--offsetFieldBackground) * 5) 0%; }
+div#mutantcrops-grid .field.field-3 { background-position:calc(100% / var(--offsetFieldBackground) * 6) 0%; }
+div#mutantcrops-grid .field.field-4 { background-position:calc(100% / var(--offsetFieldBackground) * 7) 0%; }
+div#mutantcrops-grid .field.field-5 { background-position:calc(100% / var(--offsetFieldBackground) * 8) 0%; }
+div#mutantcrops-grid .field.field-6 { background-position:calc(100% / var(--offsetFieldBackground) * 9) 0%; }
+div#mutantcrops-grid .field.field-7 { background-position:calc(100% / var(--offsetFieldBackground) * 10) 0%; }
+div#mutantcrops-grid .field.field-8 { background-position:calc(100% / var(--offsetFieldBackground) * 11) 0%; }
+div#mutantcrops-grid .field.field-9 { background-position:calc(100% / var(--offsetFieldBackground) * 12) 0%; }
+div#mutantcrops-grid .field.field-10 { background-position:calc(100% / var(--offsetFieldBackground) * 13) 0%; }
+div#mutantcrops-grid .field.field-11 { background-position:calc(100% / var(--offsetFieldBackground) * 14) 0%; }
+div#mutantcrops-grid .field.field-12 { background-position:calc(100% / var(--offsetFieldBackground) * 15) 0%; }
+div#mutantcrops-grid .field.field-13 { background-position:calc(100% / var(--offsetFieldBackground) * 16) 0%; }
+div#mutantcrops-grid .field.field-14 { background-position:calc(100% / var(--offsetFieldBackground) * 16) 0%; }
+
+
+.player-panel {
+  display: flex;
+  flex-flow: row;
+  padding:5px;
+}
+
+.player-panel .farmer-card {
+  flex: 1;
+  height: 0px;
+  padding-bottom: 53%;
+  background-image: url("img/players.jpg");
+  background-size: cover;
+  border-radius:5px;
+}
+.player-panel.player-1 .farmer-card { background-position:0% 0%; }
+.player-panel.player-2 .farmer-card { background-position:33.33% 0%; }
+.player-panel.player-3 .farmer-card { background-position:66.66% 0%; }
+.player-panel.player-4 .farmer-card { background-position:100% 0%; }
+
+.player-panel .tokens-container {
+  flex:2;
+  display:flex;
+  flex-flow:row;
+  flex-wrap:wrap;
+  justify-content: space-around;
+  align-content: flex-start;
+}
+
+.player-panel .tokens-container .token {
+  position:relative;
+  width:40%;
+  height:30%;
+  display:flex;
+  justify-content: flex-end;
+  align-items: center;
+  font-family: "BurbankBigCondensedBlack";
+  font-size: 1.5em;
+  color: #5e3313;
+}
+
+.player-panel .tokens-container .token::before {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0.2em;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background-image: url('img/resources.png');
+  background-size: 400%;
+  background-repeat: no-repeat;
+}
+.player-panel .tokens-container .token.token-coins::before { background-position:0% center; }
+.player-panel .tokens-container .token.token-food::before  { background-position:33.33% center; }
+.player-panel .tokens-container .token.token-seeds::before { background-position:66.66% center; }
+.player-panel .tokens-container .token.token-water::before { background-position:100% center; }
+
+
+.meeple {
+  position:relative;
+  z-index:10;
+}
+
+.player-panel .tokens-container .meeple {
+  width: 30%;
+  height: 38%;
+  margin-top: 2%;
+}
+
+.field .meeple {
+  width:50%;
+  height:auto;
+}
+
+.meeple svg {
+  stroke:black;
+  stroke-width:2px;
+}
+
+.meeple.meeple-1 svg { fill:#dd3431; }
+.meeple.meeple-2 svg { fill:#42c900; }
+.meeple.meeple-3 svg { fill:#1a82d7; }
+.meeple.meeple-4 svg { fill:#efce03; }
+
+
+.meeple.selectable { cursor:pointer; }
+.meeple.meeple-1.selectable:hover svg, .meeple.meeple-1.selected svg { fill:#b21c1e;}
+.meeple.meeple-2.selectable:hover svg, .meeple.meeple-2.selected svg  { fill:#388f02;}
+.meeple.meeple-3.selectable:hover svg, .meeple.meeple-3.selected svg  { fill:#08477c;}
+.meeple.meeple-4.selectable:hover svg, .meeple.meeple-4.selected svg  { fill:#a18500;}
