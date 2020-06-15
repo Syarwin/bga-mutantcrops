@@ -24,6 +24,7 @@ define('RANDOM', 1);
  */
 define('CURRENT_ROUND', 20);
 define('FIRST_PLAYER', 21);
+define('ACTION_COUNTER', 22);
 
 
 

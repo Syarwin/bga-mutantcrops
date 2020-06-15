@@ -64,5 +64,9 @@ var jstpl_crop = `<div class="crop crop-\${id}" id="crop-\${index}">
   <div class="crop-power-cost-type type-\${power3CostType}"></div>
   <div class="crop-power-effect">\${power3Effect}</div>
 </div>`;
+
+
+var jstpl_token = `<div class='token token-\${type}'></div>`;
+
 </script>
 {OVERALL_GAME_FOOTER}

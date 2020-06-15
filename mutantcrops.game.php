@@ -32,6 +32,7 @@ class MutantCrops extends Table
     self::initGameStateLabels([
       'optionSetup'  => OPTION_SETUP,
       'currentRound' => CURRENT_ROUND,
+      'actionCounter'=> ACTION_COUNTER,
       'firstPlayer'  => FIRST_PLAYER,
     ]);
 
@@ -121,8 +122,14 @@ return 0.3;
     $pId = $this->activeNextPlayer();
     self::giveExtraTime($pId);
     if (self::getGamestateValue("firstPlayer") == $pId) {
-      $n = (int) self::getGamestateValue('currentRound') + 1;
-      self::setGamestateValue("currentRound", $n);
+      $n = (int) self::getGamestateValue('actionCounter') + 1;
+      $actionPerTurn = $this->playerManager->getPlayerCount() == 2? 3 : 2;
+      if($n == $actionPerTurn){
+        $m = (int) self::getGamestateValue('currentRound') + 1;
+        self::setGamestateValue("currentRound", $m);
+        $n = 0;
+      }
+      self::setGamestateValue("actionCounter", $n);
     }
 
     $this->gamestate->nextState('start');
@@ -234,6 +241,22 @@ return 0.3;
     ]);
 
     // TODO : handle effect
+    switch($locationId){
+      // Add resources
+      case 0: case 2: case 4:
+      case 6: case 8: case 10:
+        $types = ['food', 'water', 'seeds'];
+        $type = $types[($locationId/2) % 3];
+        $n = $locationId < 5? 3 : 2;
+        $this->playerManager->getPlayer()->addResources($type, $n, $locationId);
+        break;
+
+      // One of each type
+      case 7:
+        $this->playerManager->getPlayer()->addMultiResources([1,1,1], $locationId);
+        break;
+    }
+
 
     $this->gamestate->nextState('farmerAssigned');
   }

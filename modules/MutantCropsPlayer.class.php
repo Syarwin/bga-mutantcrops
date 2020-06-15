@@ -43,14 +43,14 @@ class MutantCropsPlayer extends APP_GameClass
   public function isZombie(){ return $this->zombie; }
   public function getFarmers()
   {
-    if($this->game->playerManager->getPlayerCount() < 4)
+    if($this->game->playerManager->getPlayerCount() > 2)
       unset($this->farmers[2]);
     return $this->farmers;
   }
 
   public function getFarmersOnBoard()
   {
-    return array_values(array_filter($this->getFarmers()));
+    return array_values(array_filter($this->getFarmers(), "is_numeric"));
   }
 
 
@@ -68,4 +68,42 @@ class MutantCropsPlayer extends APP_GameClass
       'food'      => $this->food,
     ];
   }
+
+
+  public function addResources($type, $number, $from = null)
+  {
+    $this->$type += $number;
+    $this->DbQuery("UPDATE player SET {$type} = {$this->$type} WHERE player_id = {$this->getId()}");
+    $this->game->notifyAllPlayers('addResources', clienttranslate('${player_name} obtain ${n} ${type}'), [
+      'i18n' => ['type'],
+      'player_name' => $this->getName(),
+      'playerId' => $this->getId(),
+      'locationId' => $from,
+      'type' => $type,
+      'n' => $number,
+      'total' => $this->$type,
+    ]);
+  }
+
+
+  public function addMultiResources($numbers, $from = null)
+  {
+    $this->food += $numbers[0];
+    $this->water += $numbers[1];
+    $this->seeds += $numbers[2];
+    $this->DbQuery("UPDATE player SET food = {$this->food}, water = {$this->water}, seeds = {$this->seeds} WHERE player_id = {$this->getId()}");
+    $this->game->notifyAllPlayers('addMultiResources', clienttranslate('${player_name} obtain ${nFood} food, ${nWater} water and ${nSeeds} seeds'), [
+      'i18n' => ['type'],
+      'player_name' => $this->getName(),
+      'playerId' => $this->getId(),
+      'locationId' => $from,
+      'nFood' => $numbers[0],
+      'totalFood' => $this->food,
+      'nWater' => $numbers[1],
+      'totalWater' => $this->food,
+      'nSeeds' => $numbers[2],
+      'totalSeeds' => $this->seeds,
+    ]);
+  }
+
 }

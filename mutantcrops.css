@@ -364,6 +364,7 @@ div#mutantcrops-grid .field.field-14 { background-position:calc(100% / var(--off
   background-image: url('img/resources.png');
   background-size: 400%;
   background-repeat: no-repeat;
+  z-index:10;
 }
 .player-panel .tokens-container .token.token-coins::before { background-position:0% center; }
 .player-panel .tokens-container .token.token-food::before  { background-position:33.33% center; }

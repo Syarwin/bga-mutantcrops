@@ -71,6 +71,6 @@ class PlayerManager extends APP_GameClass
     foreach ($this->getPlayers() as $player)
       $locations = array_merge($locations, $player->getFarmers());
 
-    return array_values(array_filter($locations));
+    return array_values(array_filter($locations, "is_numeric"));
   }
 }

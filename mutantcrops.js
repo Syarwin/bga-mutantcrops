@@ -20,9 +20,11 @@ var debug = isDebug ? console.info.bind(window.console) : function () { };
 define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], function (dojo, declare) {
   return declare("bgagame.mutantcrops", ebg.core.gamegui, {
     /*
-    * Constructor
-    */
-    constructor: function () { },
+     * Constructor
+     */
+    constructor: function () {
+      this._connections = [];
+    },
 
     /*
      * Setup:
@@ -147,6 +149,11 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], functi
      },
 
 
+
+     connect: function(node, action, callback){
+       this._connections.push(dojo.connect(node, action, callback));
+     },
+
      /*
       * clearPossible:
       * 	clear every clickable space and any selected worker
@@ -158,7 +165,12 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], functi
        this._selectedFarmer = null;
        dojo.query(".meeple").removeClass("selectable selected");
        dojo.query(".field > div").removeClass("selectable");
+       this._connections.forEach(dojo.disconnect);
+       this._connections = [];
      },
+
+
+
 
      /////////////////////////////////
      /////////////////////////////////
@@ -173,15 +185,26 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], functi
        var _this = this;
 
        this._availableLocations = args.availableLocations;
-       if(args.location == "hand"){
-         var meeple = dojo.query("#overall_player_board_" + this.getCurrentPlayerId() + " .meeple")[0];
-         this.onClickFarmer(meeple.getAttribute('data-farmerId'));
-       }
-       /*
-       else {
+       this.makeFarmersSelectable( (args.location == "hand")? this.getFarmerInHand() : this.getPlayerFarmers() );
+     },
 
+
+     /*
+      * makeFarmersSelectable:
+      */
+     makeFarmersSelectable: function (farmers) {
+       var _this = this;
+       this._selectableFarmers = farmers;
+
+       // If only one farmer can work, automatically select it
+       if (this._selectableFarmers.length == 1)
+        this.onClickSelectFarmer(this._selectableFarmers[0]);
+       // Otherwise, let the user make the choice
+       else if (this._selectableFarmers.length > 1) {
+         this._selectableFarmers.addClass("selectable").forEach(function(meeple){
+           _this.connect(meeple, "onclick", function(evt){ evt.preventDefault(); evt.stopPropagation();_this.onClickSelectFarmer(meeple); });
+         });
        }
-       */
      },
 
 
@@ -189,18 +212,37 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], functi
      /*
       * onClickFarmer: TODO
       */
-     onClickFarmer: function(farmerId){
+     onClickSelectFarmer: function(farmer){
        var _this = this;
+       var farmerId = farmer.getAttribute('data-farmerId');
 
+       this.clearPossible();
        this._selectedFarmer = farmerId;
-       dojo.query(".meeple").removeClass("selectable");
        dojo.addClass("meeple-" + this.getActivePlayerId() + "-" + farmerId, "selected");
+
+       if (this._selectableFarmers.length > 1) {
+         this.addActionButton('buttonReset', _('Cancel'), 'onClickCancelSelect', null, false, 'gray');
+       }
 
        this._availableLocations.forEach(function(locationId){
          dojo.addClass('location-' + locationId, 'selectable');
-         dojo.connect($('location-' + locationId), 'onclick', function(){ _this.onClickLocation(locationId); });
+         _this.connect($('location-' + locationId), 'onclick', function(evt){ evt.preventDefault(); evt.stopPropagation(); _this.onClickLocation(locationId); });
        });
      },
+
+
+     /*
+      * onClickCancelSelect:
+      * 	triggered after a click on the action button "buttonReset".
+      *  unselect the previously selected worker and make every worker selectable
+      */
+     onClickCancelSelect: function (evt) {
+       dojo.stopEvent(evt);
+       this.clearPossible();
+       this._selectedFarmer = null;
+       this.makeFarmersSelectable(this._selectableFarmers);
+     },
+
 
 
      /*
@@ -232,6 +274,20 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], functi
      },
 
 
+     notif_addResources: function (n) {
+       debug('Notif: adding resources to a player', n.args);
+       this.addResources(n.args.locationId, n.args.playerId, n.args.type, n.args.n, n.args.total, 0);
+     },
+
+     notif_addMultiResources: function (n) {
+       debug('Notif: adding several type of resources to a player', n.args);
+
+       this.addResources(n.args.locationId, n.args.playerId, "food", n.args.nFood, n.args.totalFood, 0);
+       this.addResources(n.args.locationId, n.args.playerId, "water", n.args.nWater, n.args.totalWater, 1);
+       this.addResources(n.args.locationId, n.args.playerId, "seeds", n.args.nSeeds, n.args.totalSeeds, 2);
+     },
+
+
      ///////////////////////////////////////
      ////////    Utility methods    ////////
      ///////////////////////////////////////
@@ -239,7 +295,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], functi
      /*
       * // TODO:
       */
-     slide: function slide(sourceId, targetId, duration, delay) {
+     slide: function (sourceId, targetId, duration, delay) {
        var _this = this;
        return new Promise(function (resolve, reject) {
          var animation = _this.slideToObject(sourceId, targetId, duration, delay);
@@ -248,6 +304,36 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], functi
        });
      },
 
+
+     getPlayerFarmers: function(playerId){
+       playerId = playerId || this.getCurrentPlayerId();
+       var no = this.gamedatas.fplayers.reduce(function(carry, player){
+         return (player.id == playerId)? player.no : carry;
+       }, 1);
+
+       return dojo.query("#board .meeple-" + no);
+     },
+
+
+     getFarmerInHand: function(playerId){
+       playerId = playerId || this.getCurrentPlayerId();
+       return dojo.query("#overall_player_board_" + this.getCurrentPlayerId() + " .meeple")[0];
+     },
+
+
+     addResources: function(locationId, playerId, type, n, total, delay){
+       debug("Adding resource : " + n + " " + type);
+       var container = "tokens-container-" + playerId,
+           location  = "location-" + locationId;
+
+       for(var i = 0; i < n; i++){
+         this.slideTemporaryObject(this.format_block( 'jstpl_token', { type:type }), container, location, container, 2000, (i + delay)*100);
+       }
+
+       setTimeout(function(){
+         dojo.query("#" + container + " .token-" + type)[0].innerHTML = "x" + total;
+       }, 2000 + n*100);
+     },
 
      ///////////////////////////////////////////////////
      //////   Reaction to cometD notifications   ///////
@@ -261,6 +347,8 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], functi
      setupNotifications: function () {
        var notifs = [
          ['farmerAssigned', 1000],
+         ['addResources', 2000],
+         ['addMultiResources', 2000],
        ];
 /*
          ['cancel', 1000],
