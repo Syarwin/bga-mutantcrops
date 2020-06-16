@@ -18,6 +18,7 @@ class MutantCropsPlayer extends APP_GameClass
     $this->seeds = (int) $row['seeds'];
     $this->water = (int) $row['water'];
     $this->food  = (int) $row['food'];
+    $this->crops = $this->game->cards->getPlayerCrops($this->id);
   }
 
   private $game;
@@ -29,6 +30,7 @@ class MutantCropsPlayer extends APP_GameClass
   private $zombie = false;
 
   private $farmers = [];
+  private $crops = [];
   private $coins;
   private $seeds;
   private $water;
@@ -41,6 +43,7 @@ class MutantCropsPlayer extends APP_GameClass
   public function getColor(){ return $this->color; }
   public function isEliminated(){ return $this->eliminated; }
   public function isZombie(){ return $this->zombie; }
+  public function getCrops(){ return $this->crops; }
   public function getFarmers()
   {
     if($this->game->playerManager->getPlayerCount() > 2)
@@ -66,9 +69,14 @@ class MutantCropsPlayer extends APP_GameClass
       'seeds'     => $this->seeds,
       'water'     => $this->water,
       'food'      => $this->food,
+      'crops'     => $this->crops,
     ];
   }
 
+  public function canSow($cropId)
+  {
+    return (int) $this->seeds > (int) $this->game->crops[$cropId]['seeds'];
+  }
 
   public function addResources($type, $number, $from = null)
   {
@@ -93,7 +101,6 @@ class MutantCropsPlayer extends APP_GameClass
     $this->seeds += $numbers[2];
     $this->DbQuery("UPDATE player SET food = {$this->food}, water = {$this->water}, seeds = {$this->seeds} WHERE player_id = {$this->getId()}");
     $this->game->notifyAllPlayers('addMultiResources', clienttranslate('${player_name} obtain ${nFood} food, ${nWater} water and ${nSeeds} seeds'), [
-      'i18n' => ['type'],
       'player_name' => $this->getName(),
       'playerId' => $this->getId(),
       'locationId' => $from,
@@ -103,6 +110,24 @@ class MutantCropsPlayer extends APP_GameClass
       'totalWater' => $this->food,
       'nSeeds' => $numbers[2],
       'totalSeeds' => $this->seeds,
+    ]);
+  }
+
+
+
+  public function sowCrop($cropId, $cropPos)
+  {
+    $crop = $this->game->crops[$cropId];
+    $this->seeds -= $crop['seeds'];
+    $this->DbQuery("UPDATE player SET seeds = {$this->seeds} WHERE player_id = {$this->getId()}");
+    $this->game->notifyAllPlayers('sowCrop', clienttranslate('${player_name} spends ${n} seeds to sow ${crop_name}'), [
+      'i18n' => ['crop_name'],
+      'player_name' => $this->getName(),
+      'playerId' => $this->getId(),
+      'crop_name' => $crop['name'],
+      'n' => $crop['seeds'],
+      'total' => $this->seeds,
+      'pos' => $cropPos,
     ]);
   }
 

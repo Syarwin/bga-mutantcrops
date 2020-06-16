@@ -212,7 +212,7 @@ return 0.3;
 
 
   /*
-	 * Build : TODO
+	 * Assign : TODO
    */
   public function playerAssign($farmerId, $locationId)
   {
@@ -241,28 +241,68 @@ return 0.3;
     ]);
 
     // TODO : handle effect
+    $transition = 'farmerAssigned';
     switch($locationId){
       // Add resources
       case 0: case 2: case 4:
       case 6: case 8: case 10:
-        $types = ['food', 'water', 'seeds'];
-        $type = $types[($locationId/2) % 3];
+        $types = ['seeds', 'water', 'food', 'food', 'water', 'seeds'];
+        $type = $types[$locationId/2];
         $n = $locationId < 5? 3 : 2;
         $this->playerManager->getPlayer()->addResources($type, $n, $locationId);
         break;
 
-      // One of each type
+      // Add one resource of each type
       case 7:
         $this->playerManager->getPlayer()->addMultiResources([1,1,1], $locationId);
+        break;
+
+      // Sow a crop
+      case 1:
+        $transition = "sow";
         break;
     }
 
 
-    $this->gamestate->nextState('farmerAssigned');
+    $this->gamestate->nextState($transition);
   }
 
 
 
+
+  //////////////////////////////////////
+  /////////////    Sow    //////////////
+  //////////////////////////////////////
+
+  /*
+   * argPlayerSow: give the list of accessible crops for sowing
+   */
+  public function argPlayerSow()
+  {
+    $arg = [
+      'crops' => $this->cards->getSowableCrops(),
+    ];
+
+    return $arg;
+  }
+
+
+
+  /*
+	 * Assign : TODO
+   */
+  public function playerSow($cropPos)
+  {
+    self::checkAction('sow');
+    $arg = $this->argPlayerSow();
+
+    if(!in_array($cropPos, $arg['crops']) ){
+      throw new BgaUserException(_("You can't sow this crop"));
+    }
+
+    $this->cards->sowCrop($cropPos);
+    $this->gamestate->nextState("sowed");
+  }
 
   ////////////////////////////////////
   ////////////   Zombie   ////////////

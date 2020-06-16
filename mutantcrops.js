@@ -63,7 +63,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], functi
 
       // Display fields (only the ones visible at that stage)
       gamedatas.fields.forEach(function(fieldId, index){
-        dojo.addClass('field-' + index, 'field-' + fieldId);
+        dojo.addClass('field-' + index, 'field-active field-' + fieldId);
       });
 
        // Setup game notifications
@@ -165,6 +165,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], functi
        this._selectedFarmer = null;
        dojo.query(".meeple").removeClass("selectable selected");
        dojo.query(".field > div").removeClass("selectable");
+       dojo.query(".crop").removeClass("selectable");
        this._connections.forEach(dojo.disconnect);
        this._connections = [];
      },
@@ -288,6 +289,41 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], functi
      },
 
 
+
+     //////////////////////////////
+     /////////    Sow    //////////
+     //////////////////////////////
+
+     /*
+      * playerSow: TODO
+      */
+     onEnteringStatePlayerSow: function (args) {
+       var _this = this;
+
+       args.crops.forEach(function(cropPos){
+         dojo.addClass('crop-' + cropPos, "selectable");
+         _this.connect($('crop-' + cropPos), "onclick", function(evt){ evt.preventDefault(); evt.stopPropagation();_this.onClickSelectCrop(cropPos); });
+       });
+     },
+
+
+     /*
+      * onClickSelectCrop: TODO
+      */
+     onClickSelectCrop: function(cropPos){
+       if (!this.checkAction('sow')) return false;
+
+       this.takeAction('sow', {  cropPos: cropPos });
+       this.clearPossible();
+     },
+
+
+     notif_sowCrop: function (n) {
+       debug('Notif: sowing a crop', n.args);
+//       this.addResources(n.args.locationId, n.args.playerId, n.args.type, n.args.n, n.args.total, 0);
+     },
+
+
      ///////////////////////////////////////
      ////////    Utility methods    ////////
      ///////////////////////////////////////
@@ -317,7 +353,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], functi
 
      getFarmerInHand: function(playerId){
        playerId = playerId || this.getCurrentPlayerId();
-       return dojo.query("#overall_player_board_" + this.getCurrentPlayerId() + " .meeple")[0];
+       return [dojo.query("#overall_player_board_" + this.getCurrentPlayerId() + " .meeple")[0]];
      },
 
 
@@ -327,12 +363,12 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], functi
            location  = "location-" + locationId;
 
        for(var i = 0; i < n; i++){
-         this.slideTemporaryObject(this.format_block( 'jstpl_token', { type:type }), container, location, container, 2000, (i + delay)*100);
+         this.slideTemporaryObject(this.format_block( 'jstpl_token', { type:type }), container, location, container, 1000, (i + delay)*100);
        }
 
        setTimeout(function(){
          dojo.query("#" + container + " .token-" + type)[0].innerHTML = "x" + total;
-       }, 2000 + n*100);
+       }, 1000 + n*100);
      },
 
      ///////////////////////////////////////////////////
@@ -347,8 +383,9 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], functi
      setupNotifications: function () {
        var notifs = [
          ['farmerAssigned', 1000],
-         ['addResources', 2000],
-         ['addMultiResources', 2000],
+         ['addResources', 1000],
+         ['addMultiResources', 1000],
+         ['sowCrop', 1500],
        ];
 /*
          ['cancel', 1000],

@@ -80,10 +80,29 @@ div.crop {
   height:0%;
   position:relative;
   padding-bottom: var(--ratio-percent);
+  border-radius: 5%;
 }
 .dijitTooltip .crop {
   width:var(--min-card-width);
 }
+
+div.crop.selectable::before {
+  content:'';
+  position:absolute;
+  width:99%;
+  height:99%;
+  cursor:pointer;
+  background-color: rgba(255,255,255,0.3);
+  border-radius:5%;
+  z-index:4;
+  border:3px dashed white;
+}
+
+div.crop.selectable:hover::before {
+  border: 3px solid red;
+  background-color: rgba(255,255,255,0.6);
+}
+
 
 
 div#mutantcrops-grid div#crop-0 {  grid-column: 3; }
@@ -267,7 +286,7 @@ div#mutantcrops-grid .field {
   background-image:url("img/fields.jpg");
 }
 
-div#mutantcrops-grid .field > div {
+div#mutantcrops-grid .field.field-active > div {
   position:absolute;
   width:90%;
   height:40%;
@@ -278,16 +297,16 @@ div#mutantcrops-grid .field > div {
   justify-content: center;
   align-items: center;
 }
-div#mutantcrops-grid .field > div:nth-child(1) { top:2%; }
-div#mutantcrops-grid .field > div:nth-child(2) { top:51%; }
+div#mutantcrops-grid .field.field-active > div:nth-child(1) { top:2%; }
+div#mutantcrops-grid .field.field-active > div:nth-child(2) { top:51%; }
 
 
-div#mutantcrops-grid .field > div.selectable {
+div#mutantcrops-grid .field.field-active > div.selectable {
   background-color:rgba(255,255,255,0.2);
   cursor:pointer;
 }
 
-div#mutantcrops-grid .field > div.selectable:hover {
+div#mutantcrops-grid .field.field-active > div.selectable:hover {
   background-color:rgba(255,255,255,0.5);
   border: 3px solid red;
 }

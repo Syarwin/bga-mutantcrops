@@ -101,9 +101,28 @@ $machinestates = [
       'zombiePass' => ST_END_OF_TURN,
       'endturn'    => ST_END_OF_TURN,
       'endgame'    => ST_GAME_END,
-      'farmerAssigned' => ST_NEXT_PLAYER,
+      'farmerAssigned' => ST_END_OF_TURN,
+      'sow' => ST_SOW,
     ],
   ],
+
+
+  ST_SOW => [
+    'name' => 'playerSow',
+    'description' => clienttranslate('${actplayer} must sow a crop'),
+    'descriptionmyturn' => clienttranslate('${you} must sow a crop'),
+    'type' => 'activeplayer',
+    'args' => 'argPlayerSow',
+    'possibleactions' => ['sow'],
+    'transitions' => [
+      'zombiePass' => ST_END_OF_TURN,
+      'endturn'    => ST_END_OF_TURN,
+      'endgame'    => ST_GAME_END,
+      'sowed'      => ST_END_OF_TURN,
+    ],
+  ],
+
+
 
   ST_END_OF_TURN => [
     'name' => 'endOfTurn',

@@ -6,6 +6,7 @@
 class MutantCropsCards extends APP_GameClass
 {
   public $game;
+  public $crops;
   public function __construct($game)
   {
     $this->game = $game;
@@ -54,11 +55,36 @@ class MutantCropsCards extends APP_GameClass
   }
 
 
+  public function getPlayerCrops($pId = null)
+  {
+    $pId = $pId ?: $this->game->getActivePlayerId();
+    return array_values(array_map(function($card){ return $card['type']; }, $this->crops->getCardsInLocation("hand", $pId)));
+  }
+
+
   public function getFieldsOnBoard()
   {
     $fields = $this->game->log->getAction("fields");
     $round = (int) $this->game->getGamestateValue('currentRound');
     return array_values(array_slice($fields['fields'], 0, 6 + $round));
+  }
+
+
+  public function getSowableCrops()
+  {
+    $player = $this->game->playerManager->getPlayer();
+    $crops = [];
+    foreach($this->getCropsOnBoard() as $pos => $cropId){
+      if($player->canSow($cropId))
+        $crops[] = $pos;
+    }
+
+    return $crops;
+  }
+
+  public function canSow()
+  {
+    return count($this->getSowableCrops()) > 0;
   }
 
 
@@ -73,7 +99,18 @@ class MutantCropsCards extends APP_GameClass
 
     $farmersLocations = $this->game->playerManager->getFarmersLocations();
     return array_values(array_filter($locations, function($location) use ($farmersLocations){
-      return !in_array($location, $farmersLocations);
+      return !in_array($location, $farmersLocations)
+        && (!in_array($location, [1]) || $this->canSow());
     }));
+  }
+
+
+
+  public function sowCrop($cropPos)
+  {
+    $card = array_values($this->crops->getCardsInLocation("board"))[$cropPos];
+    $this->crops->moveCard($card['id'], 'hand', $this->game->getActivePlayerId());
+    $this->game->playerManager->getPlayer()->sowCrop($card["type"], $cropPos);
+    $this->crops->pickCardForLocation('deck', 'board', $cropPos);
   }
 }
