@@ -4,20 +4,27 @@
   <div id="mutantcrops-grid">
     <div id="crops-deck"></div>
 
-    <div id="field-0" class="field stage-1"><div id="location-0"></div><div id="location-1"></div></div>
-    <div id="field-1" class="field stage-1"><div id="location-2"></div><div id="location-3"></div>></div>
-    <div id="field-2" class="field stage-1"><div id="location-4"></div><div id="location-5"></div></div>
-    <div id="field-3" class="field stage-1"><div id="location-6"></div><div id="location-7"></div></div>
-    <div id="field-4" class="field stage-1"><div id="location-8"></div><div id="location-9"></div></div>
-    <div id="field-5" class="field stage-1"><div id="location-10"></div><div id="location-11"></div></div>
+    <div id="field-0" class="field stage-1"><div></div><div></div></div>
+    <div id="field-1" class="field stage-1"><div></div><div></div></div>
+    <div id="field-2" class="field stage-1"><div></div><div></div></div>
+    <div id="field-3" class="field stage-1"><div></div><div></div></div>
+    <div id="field-4" class="field stage-1"><div></div><div></div></div>
+    <div id="field-5" class="field stage-1"><div></div><div></div></div>
 
-    <div id="field-6" class="field stage-2"><div id="location-12"></div><div id="location-13"></div></div>
-    <div id="field-7" class="field stage-2"><div id="location-14"></div><div id="location-15"></div></div>
-    <div id="field-8" class="field stage-2"><div id="location-16"></div><div id="location-17"></div></div>
+    <div id="field-6" class="field stage-2"><div></div><div></div></div>
+    <div id="field-7" class="field stage-2"><div></div><div></div></div>
+    <div id="field-8" class="field stage-2"><div></div><div></div></div>
 
-    <div id="field-9" class="field stage-3"><div id="location-18"></div><div id="location-19"></div></div>
-    <div id="field-10" class="field stage-3"><div id="location-20"></div><div id="location-21"></div>></div>
-    <div id="field-11" class="field stage-3"><div id="location-22"></div><div id="location-23"></div></div>
+    <div id="field-9" class="field stage-3"><div></div><div></div></div>
+    <div id="field-10" class="field stage-3"><div></div><div></div>></div>
+    <div id="field-11" class="field stage-3"><div></div><div></div></div>
+  </div>
+  <div id="player-crops">
+    <!-- BEGIN playerCrops -->
+      <div id="player-crops-{PID}" class="player-crops player-{NO}">
+        <div class='farmer-card'>{NAME}</div>
+      </div>
+    <!-- END playerCrops -->
   </div>
 </div>
 

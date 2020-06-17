@@ -75,7 +75,7 @@ class MutantCropsPlayer extends APP_GameClass
 
   public function canSow($cropId)
   {
-    return (int) $this->seeds > (int) $this->game->crops[$cropId]['seeds'];
+    return (int) $this->seeds >= (int) $this->game->crops[$cropId]['seeds'];
   }
 
   public function addResources($type, $number, $from = null)
@@ -115,9 +115,9 @@ class MutantCropsPlayer extends APP_GameClass
 
 
 
-  public function sowCrop($cropId, $cropPos)
+  public function sowCrop($card, $cropPos)
   {
-    $crop = $this->game->crops[$cropId];
+    $crop = $this->game->crops[$card['type']];
     $this->seeds -= $crop['seeds'];
     $this->DbQuery("UPDATE player SET seeds = {$this->seeds} WHERE player_id = {$this->getId()}");
     $this->game->notifyAllPlayers('sowCrop', clienttranslate('${player_name} spends ${n} seeds to sow ${crop_name}'), [
@@ -127,7 +127,9 @@ class MutantCropsPlayer extends APP_GameClass
       'crop_name' => $crop['name'],
       'n' => $crop['seeds'],
       'total' => $this->seeds,
-      'pos' => $cropPos,
+      'cropPos' => $cropPos,
+      'cropType' => $card['type'],
+      'cardId' => $card['id'],
     ]);
   }
 

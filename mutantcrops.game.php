@@ -79,6 +79,7 @@ class MutantCrops extends Table
     $pId = $this->activeNextPlayer();
     self::setGameStateInitialValue('firstPlayer', $pId);
     self::setGameStateInitialValue('currentRound', 0);
+    self::setGameStateInitialValue('actionCounter', -1);
   }
 
   /*
@@ -128,6 +129,12 @@ return 0.3;
         $m = (int) self::getGamestateValue('currentRound') + 1;
         self::setGamestateValue("currentRound", $m);
         $n = 0;
+
+        $fields = $this->cards->getFieldsOnBoard();
+        $this->notifyAllPlayers('newField', clienttranslate('A new field is now available!'), [
+          'fieldId' => $fields[count($fields) - 1],
+          'index' => count($fields) - 1,
+        ]);
       }
       self::setGamestateValue("actionCounter", $n);
     }

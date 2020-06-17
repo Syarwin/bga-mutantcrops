@@ -58,7 +58,7 @@ class MutantCropsCards extends APP_GameClass
   public function getPlayerCrops($pId = null)
   {
     $pId = $pId ?: $this->game->getActivePlayerId();
-    return array_values(array_map(function($card){ return $card['type']; }, $this->crops->getCardsInLocation("hand", $pId)));
+    return array_values($this->crops->getCardsInLocation("hand", $pId));
   }
 
 
@@ -110,7 +110,13 @@ class MutantCropsCards extends APP_GameClass
   {
     $card = array_values($this->crops->getCardsInLocation("board"))[$cropPos];
     $this->crops->moveCard($card['id'], 'hand', $this->game->getActivePlayerId());
-    $this->game->playerManager->getPlayer()->sowCrop($card["type"], $cropPos);
-    $this->crops->pickCardForLocation('deck', 'board', $cropPos);
+    $this->game->playerManager->getPlayer()->sowCrop($card, $cropPos);
+
+    $newCard = $this->crops->pickCardForLocation('deck', 'board', $cropPos);
+    $this->game->notifyAllPlayers('newCrop', '', [
+      'cropPos' => $cropPos,
+      'cropType' => $newCard['type'],
+    ]);
+
   }
 }

@@ -36,5 +36,15 @@
   	    // Get players & players number
         $players = $this->game->loadPlayersBasicInfos();
         $players_nbr = count( $players );
+
+
+        $this->page->begin_block( "mutantcrops_mutantcrops", "playerCrops" );
+        foreach($players as $player){
+          $this->page->insert_block("playerCrops", [
+            'PID' => $player['player_id'],
+            'NAME' => $player['player_name'],
+            'NO' => $player['player_no'],
+          ] );
+        }
   	}
   }

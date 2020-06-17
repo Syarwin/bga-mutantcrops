@@ -38,6 +38,9 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], functi
       var _this = this;
       debug('SETUP', gamedatas);
 
+      // Display fields (only the ones visible at that stage)
+      gamedatas.fields.forEach(this.showField);
+
       // Add meeples and tokens
       gamedatas.fplayers.forEach(function(player){
         dojo.place( _this.format_block( 'jstpl_player_panel', player) , 'overall_player_board_' + player.id );
@@ -47,27 +50,46 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], functi
           var meeple = _this.format_block( 'jstpl_player_meeple', { playerId:player.id, farmerId:id, no:player.no });
           dojo.place(meeple , location == null? ('tokens-container-' + player.id) : ('location-' + location) );
         });
+
+        player.crops.forEach(function(crop){
+          _this.addCrop(crop.type, player.id + "-" + crop.id , "player-crops-" + player.id );
+        })
       });
 
       // Display crops
-      gamedatas.crops.forEach(function(crop, id){
-        var data = gamedatas.cropsData[crop];
-        data.index = id;
-        data.power3Effect = data.power3Effect.replace("COINS",  "<span class='coin'></span>");
-        data.power3Effect = data.power3Effect.replace("WATERS", "<span class='water'></span>");
-        data.power3Effect = data.power3Effect.replace("FOODS",  "<span class='food'></span>");
-        data.power3Effect = data.power3Effect.replace("SEEDS",  "<span class='seed'></span>");
-        dojo.place( _this.format_block( 'jstpl_crop', data) , 'mutantcrops-grid' );
-        _this.addTooltipHtml('crop-' + id, _this.format_block( 'jstpl_crop', data), 0);
-      });
-
-      // Display fields (only the ones visible at that stage)
-      gamedatas.fields.forEach(function(fieldId, index){
-        dojo.addClass('field-' + index, 'field-active field-' + fieldId);
+      gamedatas.crops.forEach(function(cropType, id){
+        _this.addCrop(cropType, id, 'mutantcrops-grid' );
       });
 
        // Setup game notifications
        this.setupNotifications();
+     },
+
+
+     addCrop:function(cropType, id, container){
+       var data = this.gamedatas.cropsData[cropType];
+       data.index = id;
+       data.power3Effect = data.power3Effect.replace("COINS",  "<span class='coin'></span>");
+       data.power3Effect = data.power3Effect.replace("WATERS", "<span class='water'></span>");
+       data.power3Effect = data.power3Effect.replace("FOODS",  "<span class='food'></span>");
+       data.power3Effect = data.power3Effect.replace("SEEDS",  "<span class='seed'></span>");
+       dojo.place( this.format_block( 'jstpl_crop', data), container);
+       this.addTooltipHtml('crop-' + id, this.format_block( 'jstpl_crop', data), 0);
+     },
+
+     /*
+      * notif_newField: TODO
+      */
+     notif_newField: function (n) {
+       debug('Notif: new field available', n.args);
+       this.showField(n.args.fieldId, n.args.index);
+     },
+
+     showField: function(fieldId, index){
+       dojo.addClass('field-' + index, 'field-active field-' + fieldId);
+       dojo.query('#field-' + index + ' div').forEach(function(location, id){
+         location.id = "location-" + parseInt(2*fieldId + id);
+       });
      },
 
 
@@ -319,9 +341,21 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], functi
 
 
      notif_sowCrop: function (n) {
+       var _this = this;
        debug('Notif: sowing a crop', n.args);
-//       this.addResources(n.args.locationId, n.args.playerId, n.args.type, n.args.n, n.args.total, 0);
+
+       this.removeResources(n.args.playerId, "seeds", n.args.n, n.args.total, 0);
+       this.slideToObjectAndDestroy("crop-" + n.args.cropPos, "player-crops-" + n.args.playerId, 1000, 0);
+       setTimeout(function(){
+         _this.addCrop(n.args.cropType, n.args.playerId + "-" + n.args.cardId , "player-crops-" + n.args.playerId );
+       }, 1000);
      },
+
+     notif_newCrop: function (n) {
+       debug('Notif: adding a new crop to the board', n.args);
+       this.addCrop(n.args.cropType, n.args.cropPos, 'mutantcrops-grid' );
+     },
+
 
 
      ///////////////////////////////////////
@@ -371,6 +405,18 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], functi
        }, 1000 + n*100);
      },
 
+     removeResources: function(playerId, type, n, total, delay){
+       debug("Removing resource : " + n + " " + type);
+       var container = "tokens-container-" + playerId,
+           target  = "pagemaintitletext";
+
+       for(var i = 0; i < n; i++){
+         this.slideTemporaryObject(this.format_block( 'jstpl_token', { type:type }), container, container, target, 1000, (i + delay)*100);
+       }
+       dojo.query("#" + container + " .token-" + type)[0].innerHTML = "x" + total;
+     },
+
+
      ///////////////////////////////////////////////////
      //////   Reaction to cometD notifications   ///////
      ///////////////////////////////////////////////////
@@ -383,9 +429,11 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], functi
      setupNotifications: function () {
        var notifs = [
          ['farmerAssigned', 1000],
+         ['newField', 10],
          ['addResources', 1000],
          ['addMultiResources', 1000],
          ['sowCrop', 1500],
+         ['newCrop', 100],
        ];
 /*
          ['cancel', 1000],
