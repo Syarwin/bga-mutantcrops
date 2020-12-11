@@ -19,7 +19,7 @@ $gameinfos = [
 	'publisher_website' => 'https://ssl.queen-games.com/',
 	'publisher_bgg_id' => 47,
 	'bgg_id' => 193551,
-	'players' => [1,2,3,4],    
+	'players' => [1,2,3,4],
 
 	'suggest_player_number' => null,
 	'not_recommend_player_number' => null,
@@ -29,14 +29,7 @@ $gameinfos = [
 	'medium_additional_time' => 40,
 	'slow_additional_time' => 50,
 
-// If you are using a tie breaker in your game (using "player_score_aux"), you must describe here
-// the formula used to compute "player_score_aux". This description will be used as a tooltip to explain
-// the tie breaker to the players.
-// Note: if you are NOT using any tie breaker, leave the empty string.
-//
-// Example: 'tie_breaker_description' => totranslate( "Number of remaining cards in hand" ),
-'tie_breaker_description' => "",
-
+  'tie_breaker_description' => "",
 	'losers_not_ranked' => false,
 
 	// Game is "beta". A game MUST set is_beta=1 when published on BGA for the first time, and must remains like this until all bugs are fixed.
@@ -49,17 +42,13 @@ $gameinfos = [
 	'diplomacy' => 3,
 
 	'player_colors' => [ "ff0000", "008000", "0000ff", "ffa500", "773300" ],
-
 	'favorite_colors_support' => true,
-
-	// When doing a rematch, the player order is swapped using a "rotation" so the starting player is not the same
-	// If you want to disable this, set this to false
 	'disable_player_order_swap_on_rematch' => false,
 
-	'game_interface_width' => array(
+	'game_interface_width' => [
 		  'min' => 740,
 		  'max' => null
-	),
+	],
 
 	// Game presentation
 	// Short game presentation text that will appear on the game description page, structured as an array of paragraphs.

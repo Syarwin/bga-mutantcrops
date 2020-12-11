@@ -1,7 +1,7 @@
 /**
  *------
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
- * MutantCrops implementation : © <Your name here> <Your email address here>
+ * MutantCrops implementation : © Timothée Pecatte <tim.pecatte@gmail.com>
  *
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
@@ -16,17 +16,17 @@
 
 @font-face {
   font-family: "BurbankBigCondensedBlack";
-  src: url("img/BurbankBigCondensed-Black.otf") format("opentype");
+  src: url("img/fonts/BurbankBigCondensed-Black.otf") format("opentype");
 }
 
 @font-face {
   font-family: "BurbankBigCondensedBold";
-  src: url("img/BurbankBigCondensed-Bold.otf") format("opentype");
+  src: url("img/fonts/BurbankBigCondensed-Bold.otf") format("opentype");
 }
 
 @font-face {
   font-family: "BurbankBigCondensedMedium";
-  src: url("img/BurbankBigCondensed-Medium.otf") format("opentype");
+  src: url("img/fonts/BurbankBigCondensed-Medium.otf") format("opentype");
 }
 
 :root {
@@ -47,8 +47,9 @@ div#mutantcrops-grid {
   display: grid;
   grid-template-columns: repeat(6, minmax(var(--min-card-width), 1fr));
   grid-column-gap: var(--spacing);
-  grid-template-rows: repeat(3, 1fr);
+  grid-template-rows: repeat(3, auto);
   grid-row-gap: var(--spacing);
+  grid-auto-rows: auto;
 }
 
 @media (max-width: 1500px) {
@@ -251,14 +252,21 @@ div.crop div.crop-power-effect {
   width: 62%;
   height: 14%;
   font-family: "BurbankBigCondensedMedium";
-  font-size: calc(var(--min-card-width) * 0.74 / 10);
+  font-size: calc(var(--min-card-width) * 0.84 / 10);
   color: #5e3313;
 }
+
+div#mutantcrops-grid div.crop div.crop-power-effect {
+  font-size: calc(var(--min-card-width) * 0.7 / 10);
+}
+
+/*
 @media (max-width: 1500px) {
   div.crop div.crop-power-effect {
     font-size: calc(var(--min-card-width) * 0.84 / 10);
   }
 }
+*/
 
 .dijitTooltip div.crop div.crop-power-effect {
   font-size: calc(var(--min-card-width) * 0.66 / 10);
@@ -455,8 +463,9 @@ div.player-crops {
   border:2px solid rgb(101, 49, 25);
   box-shadow:5px 5px 5px rgb(101, 49, 25);
   border-radius: 5px;
+  border-top-left-radius: 0px;
   padding:8px;
-  margin-bottom:10px;
+  margin-bottom:50px;
   display:flex;
   flex-flow:row;
   flex-wrap:wrap;
@@ -483,11 +492,30 @@ div.player-crops .farmer-card {
   background-image: url("img/players.jpg");
   background-size: cover;
   border-radius:5px;
-  font-family: "BurbankBigCondensedBlack";
-  font-size: 1.5em;
-  text-align:center;
 }
-div.player-crops.player-1 .farmer-card { background-position:0% 0%; color:#dd3431; }
-div.player-crops.player-2 .farmer-card { background-position:33.33% 0%; color:#42c900; }
-div.player-crops.player-3 .farmer-card { background-position:66.66% 0%; color:#1a82d7; }
-div.player-crops.player-4 .farmer-card { background-position:100% 0%; color:#efce03; }
+div.player-crops.player-1 .farmer-card { background-position:0% 0%; }
+div.player-crops.player-2 .farmer-card { background-position:33.33% 0%; }
+div.player-crops.player-3 .farmer-card { background-position:66.66% 0%; }
+div.player-crops.player-4 .farmer-card { background-position:100% 0%; }
+
+div.player-crops .player-name {
+  display: block;
+  position: absolute;
+  font-family: "BurbankBigCondensedBlack";
+  font-size: 25px;
+  text-align: center;
+  top: -37px;
+  left: -2px;
+  border: 2px solid rgb(101, 49, 25);
+  border-bottom: none;
+  background-color: #ebd5bd;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  padding: 5px 15px;
+  height: 25px;
+}
+
+div.player-crops.player-1 .player-name { color:#dd3431; }
+div.player-crops.player-2 .player-name { color:#42c900; }
+div.player-crops.player-3 .player-name { color:#1a82d7; }
+div.player-crops.player-4 .player-name { color:#efce03; }

@@ -2,7 +2,7 @@
  /**
   *------
   * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
-  * MutantCrops implementation : © <Your name here> <Your email address here>
+  * MutantCrops implementation : © Timothée Pecatte <tim.pecatte@gmail.com>
   *
   * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
   * See http://en.boardgamearena.com/#!doc/Studio for more information.
@@ -10,36 +10,56 @@
   *
   * mutantcrops.game.php
   *
-  * This is the main file for your game logic.
-  *
-  * In this PHP file, you are going to defines the rules of the game.
-  *
   */
 
+
+use MUT\Players;
+use MUT\Crops;
+use MUT\Fields;
+use MUT\Log;
+/*
+$autoloadFuncs = spl_autoload_functions();
+foreach($autoloadFuncs as $unregisterFunc)
+{
+    spl_autoload_unregister($unregisterFunc);
+}
+*/
+$swdNamespaceAutoload = function ($class) {
+   $classParts = explode('\\', $class);
+   if ($classParts[0] == 'MUT') {
+       array_shift($classParts);
+       $file = dirname(__FILE__) . "/modules/php/" . implode(DIRECTORY_SEPARATOR, $classParts) . ".php";
+       if (file_exists($file)) {
+           require_once($file);
+       }
+   }
+};
+spl_autoload_register($swdNamespaceAutoload, true, true);
+
+
 require_once( APP_GAMEMODULE_PATH.'module/table/table.game.php' );
-require_once('modules/constants.inc.php');
-require_once("modules/MutantCropsCards.class.php");
-require_once("modules/MutantCropsLog.class.php");
-require_once("modules/MutantCropsPlayer.class.php");
-require_once("modules/PlayerManager.class.php");
 
 
 class MutantCrops extends Table
 {
-  public function __construct()
-  {
+  use MUT\States\NextTurnTrait;
+  use MUT\States\AssignTrait;
+  use MUT\States\SowTrait;
+
+  public static $instance = null;
+  public function __construct() {
     parent::__construct();
+    self::$instance = $this;
+
     self::initGameStateLabels([
       'optionSetup'  => OPTION_SETUP,
       'currentRound' => CURRENT_ROUND,
       'actionCounter'=> ACTION_COUNTER,
       'firstPlayer'  => FIRST_PLAYER,
     ]);
-
-    // Initialize logger, board and cards
-    $this->log   = new MutantCropsLog($this);
-    $this->cards = new MutantCropsCards($this);
-    $this->playerManager = new PlayerManager($this);
+  }
+  public static function get(){
+   return self::$instance;
   }
 
   protected function getGameName()
@@ -57,23 +77,9 @@ class MutantCrops extends Table
    */
   protected function setupNewGame($players, $options = [])
   {
-    // Create players
-    self::DbQuery('DELETE FROM player');
-    $gameInfos = self::getGameinfos();
-    $sql = 'INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar, coins, seeds, water, food) VALUES ';
-    $values = [];
-    $i = 0;
-    foreach ($players as $pId => $player) {
-      $color = $gameInfos['player_colors'][$i++];
-      $values[] = "('" . $pId . "','$color','" . $player['player_canal'] . "','" . addslashes($player['player_name']) . "','" . addslashes($player['player_avatar']) . "', 0,0,0,0)";
-    }
-    self::DbQuery($sql . implode($values, ','));
-    self::reloadPlayersBasicInfos();
-
-//		$optionSetup = intval(self::getGameStateValue('optionSetup'));
-
-		// Initialize board and cards
-    $this->cards->setupNewGame($players);
+    MUT\Players::setupNewGame($players);
+    MUT\Crops::setupNewGame($players);
+    MUT\Fields::setupNewGame($players);
 
     // Active first player to play
     $pId = $this->activeNextPlayer();
@@ -90,10 +96,10 @@ class MutantCrops extends Table
   protected function getAllDatas()
   {
     return [
-			'cropsData' => $this->crops,
-			'crops' => $this->cards->getCropsOnBoard(),
-      'fields' => $this->cards->getFieldsOnBoard(),
-      'fplayers' => $this->playerManager->getUiData(),
+			'cropsData' => MUT\Crops::getUiData(),
+			'crops' => MUT\Crops::getOnBoard(),
+      'fields' => MUT\Fields::getOnBoard(),
+      'fplayers' => MUT\Players::getUiData(),
     ];
   }
 
@@ -106,210 +112,10 @@ class MutantCrops extends Table
   {
 		// TODO
 //    return count($this->board->getPlacedPieces()) / 100;
-return 0.3;
+    return 0.3;
   }
 
 
-
-  ////////////////////////////////////////////////
-  ////////////   Next player / Win   ////////////
-  ////////////////////////////////////////////////
-
-  /*
-   * stNextPlayer: go to next player
-   */
-  public function stNextPlayer()
-  {
-    $pId = $this->activeNextPlayer();
-    self::giveExtraTime($pId);
-    if (self::getGamestateValue("firstPlayer") == $pId) {
-      $n = (int) self::getGamestateValue('actionCounter') + 1;
-      $actionPerTurn = $this->playerManager->getPlayerCount() == 2? 3 : 2;
-      if($n == $actionPerTurn){
-        $m = (int) self::getGamestateValue('currentRound') + 1;
-        self::setGamestateValue("currentRound", $m);
-        $n = 0;
-
-        $fields = $this->cards->getFieldsOnBoard();
-        $this->notifyAllPlayers('newField', clienttranslate('A new field is now available!'), [
-          'fieldId' => $fields[count($fields) - 1],
-          'index' => count($fields) - 1,
-        ]);
-      }
-      self::setGamestateValue("actionCounter", $n);
-    }
-
-    $this->gamestate->nextState('start');
-  }
-
-  /*
-   * stStartOfTurn: called at the beggining of each player turn
-   */
-  public function stStartOfTurn()
-  {
-    $this->log->startTurn();
-		$state = "assign";
-    $this->gamestate->nextState($state);
-  }
-
-
-  /*
-   * stEndOfTurn: called at the end of each player turn
-   */
-  public function stEndOfTurn()
-  {
-    $this->stCheckEndOfGame();
-    $this->gamestate->nextState('next');
-  }
-
-  /*
-   * stCheckEndOfGame: check if the game is finished
-   */
-  public function stCheckEndOfGame()
-  {
-		return false;
-  }
-
-
-  /*
-   * announceWin: TODO
-   *
-  public function announceWin($playerId, $win = true)
-  {
-    $players = $win ? $this->playerManager->getTeammates($playerId) : $this->playerManager->getOpponents($playerId);
-    if (count($players) == 2) {
-      self::notifyAllPlayers('message', clienttranslate('${player_name} and ${player_name2} win!'), [
-        'player_name' => $players[0]->getName(),
-        'player_name2' => $players[1]->getName(),
-      ]);
-    } else {
-      self::notifyAllPlayers('message', clienttranslate('${player_name} wins!'), [
-        'player_name' => $players[0]->getName(),
-      ]);
-    }
-    self::DbQuery("UPDATE player SET player_score = 1 WHERE player_team = {$players[0]->getTeam()}");
-    $this->gamestate->nextState('endgame');
-  }
-*/
-
-
-  /////////////////////////////////////////
-  /////////////////////////////////////////
-  /////////////    Assign    //////////////
-  /////////////////////////////////////////
-  /////////////////////////////////////////
-
-  /*
-   * argPlayerAssign: give the list of accessible unnocupied spaces for builds
-   */
-  public function argPlayerAssign()
-  {
-    $arg = [
-      'location' => 'board',
-      'availableLocations' => $this->cards->getAvailableLocations(),
-    ];
-
-    $player = $this->playerManager->getPlayer();
-    if(count($player->getFarmersOnBoard()) < count($player->getFarmers()))
-      $arg['location'] = 'hand';
-
-    return $arg;
-  }
-
-
-
-  /*
-	 * Assign : TODO
-   */
-  public function playerAssign($farmerId, $locationId)
-  {
-    self::checkAction('assign');
-    $arg = $this->argPlayerAssign();
-
-    // Can't move a farmer on board unless all the farmers are already on the board
-    if($arg['location'] == 'hand' && $farmerId < count($this->playerManager->getPlayer()->getFarmersOnBoard()) ){
-      throw new BgaUserException(_("You have to assign one of the farmers in your hand"));
-    }
-
-    // Make sure the location is free
-    if(!in_array($locationId, $arg['availableLocations'])){
-      throw new BgaUserException(_("This location is not free"));
-    }
-
-    // Update position
-    $playerId = self::getCurrentPlayerId();
-    self::DbQuery("UPDATE player SET farmer_$farmerId = '$locationId' WHERE player_id = '$playerId'");
-    self::notifyAllPlayers('farmerAssigned', clienttranslate('${player_name} assigns one of its farmers'), [
-      'i18n' => [],
-      'playerId' => $playerId,
-      'farmerId' => $farmerId,
-      'locationId' => $locationId,
-      'player_name' => self::getActivePlayerName(),
-    ]);
-
-    // TODO : handle effect
-    $transition = 'farmerAssigned';
-    switch($locationId){
-      // Add resources
-      case 0: case 2: case 4:
-      case 6: case 8: case 10:
-        $types = ['seeds', 'water', 'food', 'food', 'water', 'seeds'];
-        $type = $types[$locationId/2];
-        $n = $locationId < 5? 3 : 2;
-        $this->playerManager->getPlayer()->addResources($type, $n, $locationId);
-        break;
-
-      // Add one resource of each type
-      case 7:
-        $this->playerManager->getPlayer()->addMultiResources([1,1,1], $locationId);
-        break;
-
-      // Sow a crop
-      case 1:
-        $transition = "sow";
-        break;
-    }
-
-
-    $this->gamestate->nextState($transition);
-  }
-
-
-
-
-  //////////////////////////////////////
-  /////////////    Sow    //////////////
-  //////////////////////////////////////
-
-  /*
-   * argPlayerSow: give the list of accessible crops for sowing
-   */
-  public function argPlayerSow()
-  {
-    $arg = [
-      'crops' => $this->cards->getSowableCrops(),
-    ];
-
-    return $arg;
-  }
-
-
-
-  /*
-	 * Assign : TODO
-   */
-  public function playerSow($cropPos)
-  {
-    self::checkAction('sow');
-    $arg = $this->argPlayerSow();
-
-    if(!in_array($cropPos, $arg['crops']) ){
-      throw new BgaUserException(_("You can't sow this crop"));
-    }
-
-    $this->cards->sowCrop($cropPos);
-    $this->gamestate->nextState("sowed");
-  }
 
   ////////////////////////////////////
   ////////////   Zombie   ////////////

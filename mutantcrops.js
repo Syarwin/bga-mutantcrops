@@ -1,7 +1,7 @@
 /**
  *------
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
- * MutantCrops implementation : © <Your name here> <Your email address here>
+ * MutantCrops implementation : © Timothée Pecatte <tim.pecatte@gmail.com>
  *
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
@@ -22,7 +22,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], functi
     /*
      * Constructor
      */
-    constructor: function () {
+    constructor() {
       this._connections = [];
     },
 
@@ -34,61 +34,59 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], functi
      * Params :
      *  - mixed gamedatas : contains all datas retrieved by the getAllDatas PHP method.
      */
-    setup: function (gamedatas) {
-      var _this = this;
+    setup(gamedatas) {
       debug('SETUP', gamedatas);
 
       // Display fields (only the ones visible at that stage)
       gamedatas.fields.forEach(this.showField);
 
       // Add meeples and tokens
-      gamedatas.fplayers.forEach(function(player){
-        dojo.place( _this.format_block( 'jstpl_player_panel', player) , 'overall_player_board_' + player.id );
+      gamedatas.fplayers.forEach(player => {
+        dojo.place( this.format_block( 'jstpl_player_panel', player) , 'overall_player_board_' + player.id );
 
         // Meeples
-        player.farmers.forEach(function(location, id){
-          var meeple = _this.format_block( 'jstpl_player_meeple', { playerId:player.id, farmerId:id, no:player.no });
+        player.farmers.forEach((location, id) => {
+          var meeple = this.format_block( 'jstpl_player_meeple', { playerId:player.id, farmerId:id, no:player.no });
           dojo.place(meeple , location == null? ('tokens-container-' + player.id) : ('location-' + location) );
         });
 
-        player.crops.forEach(function(crop){
-          _this.addCrop(crop.type, player.id + "-" + crop.id , "player-crops-" + player.id );
+        player.crops.forEach(crop => {
+          this.addCrop(crop.type, player.id + "-" + crop.id , "player-crops-" + player.id );
         })
       });
 
       // Display crops
-      gamedatas.crops.forEach(function(cropType, id){
-        _this.addCrop(cropType, id, 'mutantcrops-grid' );
-      });
+      gamedatas.crops.forEach((crop, index) => this.addCrop(crop, index, 'mutantcrops-grid') );
 
        // Setup game notifications
        this.setupNotifications();
      },
 
 
-     addCrop:function(cropType, id, container){
-       var data = this.gamedatas.cropsData[cropType];
-       data.index = id;
+     addCrop(crop, index, container){
+       var data = this.gamedatas.cropsData[crop.type];
+       data.id = crop.id;
+       data.index = index;
        data.power3Effect = data.power3Effect.replace("COINS",  "<span class='coin'></span>");
        data.power3Effect = data.power3Effect.replace("WATERS", "<span class='water'></span>");
        data.power3Effect = data.power3Effect.replace("FOODS",  "<span class='food'></span>");
        data.power3Effect = data.power3Effect.replace("SEEDS",  "<span class='seed'></span>");
        dojo.place( this.format_block( 'jstpl_crop', data), container);
-       this.addTooltipHtml('crop-' + id, this.format_block( 'jstpl_crop', data), 0);
+       this.addTooltipHtml('crop-' + index, this.format_block( 'jstpl_crop', data), 0);
      },
 
      /*
       * notif_newField: TODO
       */
-     notif_newField: function (n) {
+     notif_newField(n) {
        debug('Notif: new field available', n.args);
        this.showField(n.args.fieldId, n.args.index);
      },
 
-     showField: function(fieldId, index){
-       dojo.addClass('field-' + index, 'field-active field-' + fieldId);
-       dojo.query('#field-' + index + ' div').forEach(function(location, id){
-         location.id = "location-" + parseInt(2*fieldId + id);
+     showField(field, index){
+       dojo.addClass('field-' + index, 'field-active field-' + field.id);
+       dojo.query('#field-' + index + ' div').forEach((location, id) => {
+         location.id = "location-" + parseInt(2*field.id + id);
        });
      },
 
@@ -435,16 +433,6 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/counter"], functi
          ['sowCrop', 1500],
          ['newCrop', 100],
        ];
-/*
-         ['cancel', 1000],
-         ['automatic', 1000],
-         ['addOffer', 500],
-         ['removeOffer', 500],
-         ['powerAdded', 1200],
-         ['workerPlaced', 1000],
-         ['workerMoved', 1600],
-       ];
-*/
 
        var _this = this;
        notifs.forEach(function (notif) {

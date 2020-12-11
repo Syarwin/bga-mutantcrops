@@ -22,7 +22,8 @@
   <div id="player-crops">
     <!-- BEGIN playerCrops -->
       <div id="player-crops-{PID}" class="player-crops player-{NO}">
-        <div class='farmer-card'>{NAME}</div>
+        <span class="player-name">{NAME}</span>
+        <div class='farmer-card'></div>
       </div>
     <!-- END playerCrops -->
   </div>
@@ -57,7 +58,7 @@ var jstpl_player_meeple = `<div class="meeple meeple-\${no}" id="meeple-\${playe
 </svg></div>`;
 
 
-var jstpl_crop = `<div class="crop crop-\${id}" id="crop-\${index}">
+var jstpl_crop = `<div class="crop crop-\${type}" id="crop-\${index}" data-id="\${id}">
   <div class="crop-background"></div>
   <div class="crop-frame"></div>
   <div class="crop-seeds">\${seeds}</div>
