@@ -13,7 +13,7 @@ class Notifications extends \APP_DbObject
   }
 
 
-  public function assignFamer($player, $farmerId, $locationId){
+  public function assignFarmer($player, $farmerId, $locationId){
     self::notifyAll('farmerAssigned', clienttranslate('${player_name} assigns one of its farmers'), [
       'player_name' => $player->getName(),
       'playerId' =>  $player->getId(),
@@ -49,20 +49,25 @@ class Notifications extends \APP_DbObject
   }
 
 
-  public function sowCrop($player, ){
+  public function sowCrop($player, $crop){
     self::notifyAll('sowCrop', clienttranslate('${player_name} spends ${n} seeds to sow ${crop_name}'), [
       'i18n' => ['crop_name'],
       'player_name' => $player->getName(),
       'playerId' => $player->getId(),
-      'crop_name' => $crop['name'],
-      'n' => $crop['seeds'],
-      'total' => $this->seeds,
-      'cropPos' => $cropPos,
-      'cropType' => $card['type'],
-      'cardId' => $card['id'],
+      'crop_name' => $crop->getName(),
+      'n' => $crop->getSeeds(),
+      'total' => $player->getSeeds(),
+      'crop' => $crop->getStatus(),
     ]);
   }
 
+  public function newCrop($crop){
+    self::notifyAll('newCrop', clienttranslate('A new ${crop_name} is revealed'), [
+      'i18n' => ['crop_name'],
+      'crop_name' => $crop->getName(),
+      'crop' => $crop->getStatus(),
+    ]);
+  }
 
   public function newField($fields){
     self::notifyAll('newField', clienttranslate('A new field is now available!'), [

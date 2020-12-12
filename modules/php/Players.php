@@ -84,7 +84,7 @@ class Players extends Helpers\DB_Manager
   public function getFarmersLocations()
   {
     $locations = [];
-    foreach ($this->getPlayers() as $player)
+    foreach (self::getAll() as $player)
       $locations = array_merge($locations, $player->getFarmers());
 
     return array_values(array_filter($locations, "is_numeric"));

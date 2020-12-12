@@ -33,7 +33,7 @@ class Crop {
       'type' => $this->type,
     ];
   }
-  
+
   public function getUiData(){
     return [
       'id' => $this->id,
@@ -49,4 +49,12 @@ class Crop {
       'power3Effect' => $this->power3[2]
     ];
   }
+
+  public function getStatus(){
+    return [
+      'id' => $this->id,
+      'type' => $this->type,
+    ];
+  }
+
 }

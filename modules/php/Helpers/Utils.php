@@ -1,5 +1,5 @@
 <?php
-namespace WTO\Helpers;
+namespace MUT\Helpers;
 
 abstract class Utils extends \APP_DbObject
 {

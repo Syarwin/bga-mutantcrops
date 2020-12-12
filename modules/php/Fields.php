@@ -1,5 +1,6 @@
 <?php
 namespace MUT;
+use MUT\Helpers\Utils;
 
 /*
  * MutantCropsFields: all utility functions concerning fields
@@ -45,6 +46,12 @@ class Fields extends Helpers\Pieces
     return self::getInLocation(['stage', '%'])->map(function($field){ return $field->getInfo(); });
   }
 
+  public function getIdsOnBoard()
+  {
+    return self::getInLocation(['stage', '%'])->map(function($field){ return $field->getId(); });
+  }
+
+
   public function new($stage)
   {
     self::pickForLocation(1, ['deck', $stage], ['stage', $stage]);
@@ -66,38 +73,22 @@ class Fields extends Helpers\Pieces
 
 
 
-  public function getSowableCrops()
+  public function getAvailable($player = null)
   {
-    $player = $this->game->playerManager->getPlayer();
-    $crops = [];
-    foreach($this->getCropsOnBoard() as $pos => $cropId){
-      if($player->canSow($cropId))
-        $crops[] = $pos;
-    }
-
-    return $crops;
-  }
-
-  public function canSow()
-  {
-    return count($this->getSowableCrops()) > 0;
-  }
-
-
-  public function getAvailable()
-  {
-    $fields = $this->getFieldsOnBoard();
+    $fields = self::getIdsOnBoard();
     $locations = [];
     foreach($fields as $fieldId){
       $locations[] = 2*$fieldId;
       $locations[] = 2*$fieldId + 1;
     }
 
-    $farmersLocations = $this->game->playerManager->getFarmersLocations();
-    return array_values(array_filter($locations, function($location) use ($farmersLocations){
+    $player = $player ?? Players::getActive();
+    $farmersLocations = Players::getFarmersLocations();
+    Utils::filter($locations, function($location) use ($player, $farmersLocations){
       return !in_array($location, $farmersLocations)
-        && (!in_array($location, [1]) || $this->canSow());
-    }));
+        && (!in_array($location, [1]) || $player->canSow());
+    });
+    return $locations;
   }
 
 

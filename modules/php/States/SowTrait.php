@@ -1,5 +1,6 @@
 <?php
 namespace MUT\States;
+use MUT\Players;
 
 trait SowTrait
 {
@@ -12,14 +13,9 @@ trait SowTrait
    */
   public function argPlayerSow()
   {
-    return [];
-    /*
-    $arg = [
-      'crops' => $this->cards->getSowableCrops(),
+    return [
+      'crops' => Players::getActive()->getSowableCrops()
     ];
-
-    return $arg;
-    */
   }
 
 
@@ -27,17 +23,15 @@ trait SowTrait
   /*
    * Assign : TODO
    */
-  public function playerSow($cropPos)
+  public function playerSow($cropId)
   {
     self::checkAction('sow');
     $arg = $this->argPlayerSow();
-
-    if(!in_array($cropPos, $arg['crops']) ){
-      throw new BgaUserException(_("You can't sow this crop"));
+    if(!in_array($cropId, $arg['crops']) ){
+      throw new \BgaUserException(clienttranslate("You can't sow this crop"));
     }
 
-    $this->cards->sowCrop($cropPos);
+    Players::getActive()->sowCrop($cropId);
     $this->gamestate->nextState("sowed");
   }
-
 }

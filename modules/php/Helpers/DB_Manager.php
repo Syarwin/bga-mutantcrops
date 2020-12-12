@@ -1,5 +1,5 @@
 <?php
-namespace WTO\Helpers;
+namespace MUT\Helpers;
 
 class DB_Manager extends \APP_DbObject {
 	protected static $table = null;

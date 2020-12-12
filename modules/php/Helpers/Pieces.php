@@ -1,5 +1,5 @@
 <?php
-namespace WTO\Helpers;
+namespace MUT\Helpers;
 
 /*
  * This is a generic class to manage game pieces.

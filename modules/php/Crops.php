@@ -63,9 +63,25 @@ class Crops extends Helpers\Pieces
     self::pickForLocation(count($players) == 4? 4 : 3, 'deck', 'board');
   }
 
-  public function getOnBoard()
+  public function getOnBoard($keepInfoOnly = true)
   {
-    return self::getInLocation("board")->map(function($crop){ return $crop->getInfo(); });
+    $crops = self::getInLocation("board");
+    return $keepInfoOnly? $crops->map(function($crop){ return $crop->getInfo(); }) : $crops;
+  }
+
+
+  public function sowCrop($player, $cropId)
+  {
+    self::move($cropId, 'hand', $player->getId());
+    $newCard = self::pickOneForLocation('deck', 'board');
+    Notifications::newCrop($newCard);
+  }
+
+
+  public function getPlayerCrops($pId = null)
+  {
+    $pId = $pId ?: Players::getActiveId();
+    return self::getInLocation("hand", $pId);
   }
 
 /*
@@ -76,45 +92,6 @@ class Crops extends Helpers\Pieces
   }
 
 
-  public function getPlayerCrops($pId = null)
-  {
-    $pId = $pId ?: Players::getActiveId();
-    return self::getInLocation(["hand", $pId]);
-  }
 
-
-  public function getSowableCrops()
-  {
-    $player = $this->game->playerManager->getPlayer();
-    $crops = [];
-    foreach($this->getCropsOnBoard() as $pos => $cropId){
-      if($player->canSow($cropId))
-        $crops[] = $pos;
-    }
-
-    return $crops;
-  }
-
-  public function canSow()
-  {
-    return count($this->getSowableCrops()) > 0;
-  }
-
-
-
-
-  public function sowCrop($cropPos)
-  {
-    $card = array_values($this->crops->getCardsInLocation("board"))[$cropPos];
-    $this->crops->moveCard($card['id'], 'hand', $this->game->getActivePlayerId());
-    $this->game->playerManager->getPlayer()->sowCrop($card, $cropPos);
-
-    $newCard = $this->crops->pickCardForLocation('deck', 'board', $cropPos);
-    $this->game->notifyAllPlayers('newCrop', '', [
-      'cropPos' => $cropPos,
-      'cropType' => $newCard['type'],
-    ]);
-
-  }
 */
 }

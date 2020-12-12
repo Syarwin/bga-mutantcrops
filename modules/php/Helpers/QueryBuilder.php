@@ -1,5 +1,5 @@
 <?php
-namespace WTO\Helpers;
+namespace MUT\Helpers;
 
 class QueryBuilder extends \APP_DbObject {
 	private $table, $cast, $primary, $associative, $columns, $sql, $bindValues,

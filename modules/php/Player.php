@@ -1,8 +1,16 @@
 <?php
 namespace MUT;
 
-class Player
+class Player extends Helpers\DB_Manager
 {
+  protected static $table = 'player';
+  protected static $primary = 'player_id';
+  protected static $associative = false;
+  protected function update($fields = []){
+    self::DB()->update($fields, $this->id);
+  }
+
+
   public function __construct($row)
   {
     $this->id = (int) $row['player_id'];
@@ -17,7 +25,7 @@ class Player
     $this->seeds = (int) $row['seeds'];
     $this->water = (int) $row['water'];
     $this->food  = (int) $row['food'];
-    $this->crops = []; //Crops::getPlayerCrops($this->id);
+    $this->crops = Crops::getPlayerCrops($this->id);
   }
 
   private $game;
@@ -40,6 +48,7 @@ class Player
   public function getNo(){ return $this->no; }
   public function getName(){ return $this->name; }
   public function getColor(){ return $this->color; }
+  public function getSeeds(){ return $this->seeds; }
   public function isEliminated(){ return $this->eliminated; }
   public function isZombie(){ return $this->zombie; }
   public function getCrops(){ return $this->crops; }
@@ -72,19 +81,47 @@ class Player
       'seeds'     => $this->seeds,
       'water'     => $this->water,
       'food'      => $this->food,
-      'crops'     => $this->crops,
+      'crops'     => $this->crops->map(function($crop){ return $crop->getStatus(); }),
     ];
   }
 
-  public function canSow($cropId)
+  public function canSowCrop($crop)
   {
-    return (int) $this->seeds >= (int) $this->game->crops[$cropId]['seeds'];
+    return (int) $this->seeds >= (int) $crop->getSeeds();
   }
+
+  public function canSow()
+  {
+    return count($this->getSowableCrops()) > 0;
+  }
+
+  public function getSowableCrops()
+  {
+    $crops = [];
+    foreach(Crops::getOnBoard(false) as $crop){
+      if($this->canSowCrop($crop))
+        $crops[] = $crop->getId();
+    }
+
+    return $crops;
+  }
+
+
+  public function sowCrop($cropId)
+  {
+    $crop = Crops::get($cropId);
+    $this->seeds -= $crop->getSeeds();
+    $this->update([ 'seeds' => $this->seeds ]);
+    Notifications::sowCrop($this, $crop);
+    Crops::sowCrop($this, $cropId);
+  }
+
+
 
   public function addResources($type, $amount, $from = null)
   {
     $this->$type += $amount;
-    $this->DbQuery("UPDATE player SET {$type} = {$this->$type} WHERE player_id = {$this->getId()}");
+    $this->update([$type => $this->$type]);
     Notifications::addResources($this, $from, $amount, $type, $this->$type);
   }
 
@@ -94,16 +131,14 @@ class Player
     $this->food += $numbers[0];
     $this->water += $numbers[1];
     $this->seeds += $numbers[2];
-    $this->DbQuery("UPDATE player SET food = {$this->food}, water = {$this->water}, seeds = {$this->seeds} WHERE player_id = {$this->getId()}");
+    $this->update([
+      'food' => $this->food,
+      'water' => $this->water,
+      'seeds' => $this->seeds,
+    ]);
     Notifications::addMultiResources($this, $from, $numbers, [$this->food, $this->water, $this->seeds]);
   }
 
 
-  public function sowCrop($card, $cropPos)
-  {
-    $crop = $this->game->crops[$card['type']];
-    $this->seeds -= $crop['seeds'];
-    $this->DbQuery("UPDATE player SET seeds = {$this->seeds} WHERE player_id = {$this->getId()}");
-  }
 
 }

@@ -2,6 +2,8 @@
 namespace MUT\States;
 use MUT\Log;
 use MUT\Players;
+use MUT\Fields;
+use MUT\Notifications;
 
 trait AssignTrait
 {
@@ -16,14 +18,10 @@ trait AssignTrait
    */
   public function argPlayerAssign()
   {
-    return [];
-/*
-    $arg = [
+    return [
       'location' => Players::getActive()->hasFarmerInHand()? 'hand' : 'board',
       'availableLocations' => Fields::getAvailable(),
     ];
-
-    return $arg;*/
   }
 
 
@@ -39,12 +37,12 @@ trait AssignTrait
 
     // Can't move a farmer on board unless all the farmers are already on the board
     if($arg['location'] == 'hand' && $farmerId < count($player->getFarmersOnBoard()) ){
-      throw new BgaUserException(_("You have to assign one of the farmers in your hand"));
+      throw new \BgaUserException(clienttranslate("You have to assign one of the farmers in your hand"));
     }
 
     // Make sure the location is free
     if(!in_array($locationId, $arg['availableLocations'])){
-      throw new BgaUserException(_("This location is not free"));
+      throw new \BgaUserException(clienttranslate("This location is not free"));
     }
 
     // Update position
