@@ -21,7 +21,7 @@ trait SowTrait
 
 
   /*
-   * Assign : TODO
+   * playerSow : sow a crop from deck
    */
   public function playerSow($cropId)
   {

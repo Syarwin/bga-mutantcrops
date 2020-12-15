@@ -41,7 +41,7 @@ $gameinfos = [
 	'strategy' => 2,
 	'diplomacy' => 3,
 
-	'player_colors' => [ "ff0000", "008000", "0000ff", "ffa500", "773300" ],
+	'player_colors' => [ "ff0000", "008000", "0000ff", "ffa500"],
 	'favorite_colors_support' => true,
 	'disable_player_order_swap_on_rematch' => false,
 

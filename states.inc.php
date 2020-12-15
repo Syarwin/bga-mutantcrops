@@ -69,6 +69,7 @@ $machinestates = [
       'endgame'    => ST_GAME_END,
       'farmerAssigned' => ST_END_OF_TURN,
       'sow' => ST_SOW,
+      'waterOrFeed' => ST_WATER_OR_FEED,
     ],
   ],
 
@@ -85,6 +86,22 @@ $machinestates = [
       'endturn'    => ST_END_OF_TURN,
       'endgame'    => ST_GAME_END,
       'sowed'      => ST_END_OF_TURN,
+    ],
+  ],
+
+
+  ST_WATER_OR_FEED => [
+    'name' => 'playerWaterOrFeed',
+    'description' => clienttranslate('${actplayer} must water or feed one crop'),
+    'descriptionmyturn' => clienttranslate('${you} must water or feed one of your crop'),
+    'type' => 'activeplayer',
+    'args' => 'argPlayerWaterOrFeed',
+    'possibleactions' => ['grow'],
+    'transitions' => [
+      'zombiePass' => ST_END_OF_TURN,
+      'endturn'    => ST_END_OF_TURN,
+      'endgame'    => ST_GAME_END,
+      'grow'       => ST_END_OF_TURN,
     ],
   ],
 

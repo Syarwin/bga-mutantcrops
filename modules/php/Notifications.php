@@ -76,6 +76,33 @@ class Notifications extends \APP_DbObject
     ]);
   }
 
+
+  public function growCrop($player, $crop, $type){
+    $resource = $crop->getGrowResource($type);
+    $n = $crop->getGrowCost($type);
+    $data = [
+      'i18n' => ['crop_name', 'resource_name'],
+      'player_name' => $player->getName(),
+      'playerId' => $player->getId(),
+      'crop_name' => $crop->getName(),
+      'crop' => $crop->getStatus(),
+      'resource_name' => $resource,
+      'type' => $type,
+
+      'n' => $n,
+      'total' => $resource == 'food'? $player->getFood() : $player->getWater(),
+    ];
+
+    if($type != 'special'){
+      $msg = clienttranslate('${player_name} spends ${n} ${resource_name} to grow ${crop_name} and earns ${m} coins');
+      $data['m'] = $crop->getCoinGain($type);
+      $data['totalCoins'] = $player->getCoins();
+    } else {
+      $msg = "Coucou";
+    }
+
+    self::notifyAll('growCrop', $msg, $data);
+  }
 }
 
 ?>

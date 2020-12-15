@@ -41,14 +41,10 @@ class Fields extends Helpers\Pieces
     self::shuffle('deck_3');
   }
 
-  public function getOnBoard()
+  public function getOnBoard($keepInfoOnly = true)
   {
-    return self::getInLocation(['stage', '%'])->map(function($field){ return $field->getInfo(); });
-  }
-
-  public function getIdsOnBoard()
-  {
-    return self::getInLocation(['stage', '%'])->map(function($field){ return $field->getId(); });
+    $fields = self::getInLocation(['stage', '%']);
+    return $keepInfoOnly? $fields->map(function($field){ return $field->getInfo(); }) : $fields;
   }
 
 
@@ -64,34 +60,26 @@ class Fields extends Helpers\Pieces
   }
 
 
-  public function getPlayerCrops($pId = null)
-  {
-    $pId = $pId ?: Players::getActiveId();
-    return self::getInLocation(["hand", $pId]);
-  }
-
-
-
-
   public function getAvailable($player = null)
   {
-    $fields = self::getIdsOnBoard();
-    $locations = [];
-    foreach($fields as $fieldId){
-      $locations[] = 2*$fieldId;
-      $locations[] = 2*$fieldId + 1;
-    }
-
+    $fields = self::getOnBoard(false);
     $player = $player ?? Players::getActive();
     $farmersLocations = Players::getFarmersLocations();
-    Utils::filter($locations, function($location) use ($player, $farmersLocations){
-      return !in_array($location, $farmersLocations)
-        && (!in_array($location, [1]) || $player->canSow());
-    });
+    $locations = [];
+    foreach($fields as $field){
+      $field->addAvailableLocations($locations, $player, $farmersLocations);
+    }
+
     return $locations;
   }
 
-
+  public function resolve($locationId, $player){
+    $field = self::get((int) ($locationId / 2));
+    if($locationId % 2 == 0)
+      return $field->resolveTop($player);
+    else
+      return $field->resolveBottom($player);
+  }
 
   public function sowCrop($cropPos)
   {

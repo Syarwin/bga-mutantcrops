@@ -263,6 +263,9 @@ define(["dojo", "dojo/_base/declare","ebg/core/gamegui",], (dojo, declare) => {
     },
 
 
+    place(template,data,container){
+      dojo.place(this.format_block(template, data), container);
+    },
 
     /*
      * Sliding animation wrappers with Promises

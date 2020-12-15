@@ -25,12 +25,14 @@ define([
   g_gamethemeurl + "modules/js/PlayerTrait.js",
   g_gamethemeurl + "modules/js/States/AssignTrait.js",
   g_gamethemeurl + "modules/js/States/SowTrait.js",
+  g_gamethemeurl + "modules/js/States/WaterFeedTrait.js",
 ], function (dojo, declare) {
   return declare("bgagame.mutantcrops", [
     customgame.game,
     mutantcrops.playerTrait,
     mutantcrops.sowTrait,
     mutantcrops.assignTrait,
+    mutantcrops.waterFeedTrait,
   ], {
     /*
      * Constructor
@@ -65,7 +67,43 @@ define([
 
       this.inherited(arguments);
    },
-
+onUpdateActionButtons(){
+  this.addPrimaryActionButton("test", "Coucou", () => this.notif_growCrop(
+    {
+  "uid": "5fd7f0f910945",
+  "type": "growCrop",
+  "log": "${player_name} spends ${n} ${resource_name} to grow ${crop_name} and earns ${m} coins",
+  "args": {
+    "i18n": [
+      "crop_name",
+      "resource_name"
+    ],
+    "player_name": "<!--PNS--><span class=\"playername\"><!--PNS--><span class=\"playername\" style=\"color:#0000ff;\">Tisaac0</span><!--PNE--></span><!--PNE-->",
+    "playerId": 2322021,
+    "crop_name": "Orange",
+    "crop": {
+      "id": "18",
+      "type": 9,
+      "water": false,
+      "food": false,
+      "special": false
+    },
+    "resource_name": "water",
+    "type":"water",
+    "n": 1,
+    "total": 6,
+    "m": 1,
+    "totalCoins": 1
+  },
+  "h": "04b910",
+  "channelorig": "/table/t211097",
+  "gamenameorig": "mutantcrops",
+  "time": 1607987449,
+  "move_id": 3,
+  "bIsTableMsg": true,
+  "table_id": "211097"
+}) );
+},
 
      addCrop(crop, index, container){
        var data = this.gamedatas.cropsData[crop.type];
@@ -75,6 +113,9 @@ define([
        data.power3Effect = data.power3Effect.replace("WATERS", "<span class='water'></span>");
        data.power3Effect = data.power3Effect.replace("FOODS",  "<span class='food'></span>");
        data.power3Effect = data.power3Effect.replace("SEEDS",  "<span class='seed'></span>");
+       data.water = crop.water? 1 : 0;
+       data.food = crop.food? 1 : 0;
+       data.special = crop.special? 1 : 0;
        dojo.place( this.format_block( 'jstpl_crop', data), container);
        this.addTooltipHtml('crop-' + index, this.format_block( 'jstpl_crop', data), 0);
      },
@@ -109,6 +150,8 @@ define([
        dojo.query(".meeple").removeClass("selectable selected");
        dojo.query(".field > div").removeClass("selectable");
        dojo.query(".crop").removeClass("selectable");
+       dojo.query(".crop .crop-power-box").removeClass("selectable");
+
        this.inherited(arguments);
      },
 

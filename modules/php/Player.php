@@ -49,6 +49,9 @@ class Player extends Helpers\DB_Manager
   public function getName(){ return $this->name; }
   public function getColor(){ return $this->color; }
   public function getSeeds(){ return $this->seeds; }
+  public function getWater(){ return $this->water; }
+  public function getFood(){ return $this->food; }
+  public function getCoins(){ return $this->coins; }
   public function isEliminated(){ return $this->eliminated; }
   public function isZombie(){ return $this->zombie; }
   public function getCrops(){ return $this->crops; }
@@ -85,38 +88,6 @@ class Player extends Helpers\DB_Manager
     ];
   }
 
-  public function canSowCrop($crop)
-  {
-    return (int) $this->seeds >= (int) $crop->getSeeds();
-  }
-
-  public function canSow()
-  {
-    return count($this->getSowableCrops()) > 0;
-  }
-
-  public function getSowableCrops()
-  {
-    $crops = [];
-    foreach(Crops::getOnBoard(false) as $crop){
-      if($this->canSowCrop($crop))
-        $crops[] = $crop->getId();
-    }
-
-    return $crops;
-  }
-
-
-  public function sowCrop($cropId)
-  {
-    $crop = Crops::get($cropId);
-    $this->seeds -= $crop->getSeeds();
-    $this->update([ 'seeds' => $this->seeds ]);
-    Notifications::sowCrop($this, $crop);
-    Crops::sowCrop($this, $cropId);
-  }
-
-
 
   public function addResources($type, $amount, $from = null)
   {
@@ -139,6 +110,135 @@ class Player extends Helpers\DB_Manager
     Notifications::addMultiResources($this, $from, $numbers, [$this->food, $this->water, $this->seeds]);
   }
 
+
+
+
+  /*###########################
+  #############################
+  ########## SOWING ###########
+  #############################
+  ###########################*/
+
+  public function canSowCrop($crop)
+  {
+    return (int) $this->seeds >= (int) $crop->getSeeds();
+  }
+
+  public function getSowableCrops()
+  {
+    $crops = [];
+    foreach(Crops::getOnBoard(false) as $crop){
+      if($this->canSowCrop($crop))
+        $crops[] = $crop->getId();
+    }
+
+    return $crops;
+  }
+
+  public function canSow()
+  {
+    return count($this->getSowableCrops()) > 0;
+  }
+
+
+
+  public function sowCrop($cropId)
+  {
+    $crop = Crops::get($cropId);
+    $this->seeds -= $crop->getSeeds();
+    $this->update([ 'seeds' => $this->seeds ]);
+    Notifications::sowCrop($this, $crop);
+    Crops::sowCrop($this, $cropId);
+  }
+
+
+  /*###########################
+  #############################
+  ######## WATER/FEED #########
+  #############################
+  ###########################*/
+  public function getAvailableZoneOfCrop($crop, $action = null)
+  {
+    $zones = [];
+    if(($action == 'water' || is_null($action)) && $crop->canBeWatered($this))
+      array_push($zones, [$crop->getId(), 'water']);
+
+    if(($action == 'food' || is_null($action)) && $crop->canBeFeed($this))
+      array_push($zones, [$crop->getId(), 'food']);
+
+    if($crop->canBeSpecialed($this, $action))
+      array_push($zones, [$crop->getId(), 'special']);
+
+    return $zones;
+  }
+
+  public function getAvailableZones($action = null)
+  {
+    $zones = [];
+    foreach($this->crops as $crop){
+      $zones = array_merge($zones, $this->getAvailableZoneOfCrop($crop, $action));
+    }
+    return $zones;
+  }
+
+
+  public function getWaterableCrops()
+  {
+    return $this->getAvailableZones('water');
+  }
+
+  public function canWater()
+  {
+    return count($this->getWaterableCrops()) > 0;
+  }
+
+
+
+  public function getFeedableCrops()
+  {
+    return $this->getAvailableZones('food');
+  }
+
+  public function canFeed()
+  {
+    return count($this->getFeedableCrops()) > 0;
+  }
+
+
+  public function getWaterableAndFeedableCrops()
+  {
+    return $this->getAvailableZones();
+  }
+
+  public function canWaterOrFeed()
+  {
+    return count($this->getWaterableAndFeedableCrops()) > 0;
+  }
+
+
+
+  public function growCrop($cropId, $type)
+  {
+    $crop = Crops::get($cropId);
+
+    // Pay the price
+    $resource = $crop->getGrowResource($type);
+    $n = $crop->getGrowCost($type);
+    $this->$resource -= $n;
+    $data = [ $resource => $this->$resource ];
+
+    // Gain gold if != special
+    if($type != "special"){
+      $this->coins += $crop->getCoinGain($type);
+      $data['coins'] = $this->coins;
+    }
+    $this->update($data);
+
+
+    // Notify
+    Notifications::growCrop($this, $crop, $type);
+    return Crops::growCrop($cropId, $type);
+  }
 
 
 }

@@ -45,6 +45,7 @@ class MutantCrops extends Table
   use MUT\States\NextTurnTrait;
   use MUT\States\AssignTrait;
   use MUT\States\SowTrait;
+  use MUT\States\WaterFeedTrait;
 
   public static $instance = null;
   public function __construct() {

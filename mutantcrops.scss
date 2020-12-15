@@ -1,0 +1,49 @@
+/**
+ *------
+ * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
+ * MutantCrops implementation : © Timothée Pecatte <tim.pecatte@gmail.com>
+ *
+ * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
+ * See http://en.boardgamearena.com/#!doc/Studio for more information.
+ * -----
+ *
+ * mutantcrops.css
+ *
+ * MutantCrops stylesheet
+ *
+ */
+
+
+@font-face {
+  font-family: "BurbankBigCondensedBlack";
+  src: url("img/fonts/BurbankBigCondensed-Black.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "BurbankBigCondensedBold";
+  src: url("img/fonts/BurbankBigCondensed-Bold.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "BurbankBigCondensedMedium";
+  src: url("img/fonts/BurbankBigCondensed-Medium.otf") format("opentype");
+}
+
+:root {
+  --spacing: 12px;
+  --ratio-percent: 155.55%;
+  --nbr-crops:16;
+}
+
+
+@keyframes borderBlink {
+  0%   { border-color: white; border-style: dashed; }
+  49%  { border-color: white; }
+  50%  { border-color: red; }
+  99% { border-color: red; }
+  100% { border-color:white; border-style: dashed; }
+}
+
+@import 'modules/css/layout';
+@import 'modules/css/crop';
+@import 'modules/css/player';

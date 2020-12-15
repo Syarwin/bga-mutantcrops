@@ -49,29 +49,8 @@ trait AssignTrait
     self::DbQuery("UPDATE player SET farmer_$farmerId = '$locationId' WHERE player_id = '{$player->getId()}'");
     Notifications::assignFarmer($player, $farmerId, $locationId);
 
-    // TODO : handle effect
-    $transition = 'farmerAssigned';
-    switch($locationId){
-      // Add resources
-      case 0: case 2: case 4:
-      case 6: case 8: case 10:
-        $types = ['seeds', 'water', 'food', 'food', 'water', 'seeds'];
-        $type = $types[$locationId/2];
-        $n = $locationId < 5? 3 : 2;
-        $player->addResources($type, $n, $locationId);
-        break;
-
-      // Add one resource of each type
-      case 7:
-        $player->addMultiResources([1,1,1], $locationId);
-        break;
-
-      // Sow a crop
-      case 1:
-        $transition = "sow";
-        break;
-    }
-
+    // Handle effect
+    $transition = Fields::resolve($locationId, $player) ?? 'farmerAssigned';
 
     $this->gamestate->nextState($transition);
   }

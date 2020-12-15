@@ -29,9 +29,11 @@ class Players extends Helpers\DB_Manager
     foreach ($players as $pId => $player) {
       $seeds = $i == 1? 1 : 2;
       $color = $gameInfos['player_colors'][$i++];
-      $values[] = [$pId, $color, $player['player_canal'], $player['player_name'], $player['player_avatar'], 0, $seeds, 0, 0];
+//      $values[] = [$pId, $color, $player['player_canal'], $player['player_name'], $player['player_avatar'], 0, $seeds, 0, 0];
+      $values[] = [$pId, $color, $player['player_canal'], $player['player_name'], $player['player_avatar'], 0, $seeds, 7, 7];
     }
     $query->values($values);
+    MutantCrops::get()->reattributeColorsBasedOnPreferences($players, ["ff0000", "008000", "0000ff", "ffa500"]);
     MutantCrops::get()->reloadPlayersBasicInfos();
   }
 

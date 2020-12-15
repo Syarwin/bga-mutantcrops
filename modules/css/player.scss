@@ -1,0 +1,174 @@
+.player-panel {
+  display: flex;
+  flex-flow: row;
+  padding:5px;
+
+  .farmer-card {
+    flex: 1;
+    height: 0px;
+    padding-bottom: 53%;
+    background-image: url("img/players.jpg");
+    background-size: cover;
+    border-radius:5px;
+  }
+  &.player-ff0000 .farmer-card { background-position:0% 0%; }
+  &.player-008000 .farmer-card { background-position:33.33% 0%; }
+  &.player-0000ff .farmer-card { background-position:66.66% 0%; }
+  &.player-ffa500 .farmer-card { background-position:100% 0%; }
+
+
+  .tokens-container {
+    flex:2;
+    display:flex;
+    flex-flow:row;
+    flex-wrap:wrap;
+    justify-content: space-around;
+    align-content: flex-start;
+
+    .token {
+      position:relative;
+      width:40%;
+      height:30%;
+      display:flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: "BurbankBigCondensedBlack";
+      font-size: 1.5em;
+      color: #5e3313;
+
+      &::before {
+        content: '';
+        display: block;
+        width: 45%;
+        height: 0;
+        padding-bottom: 45%;
+        background-image: url('img/resources.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        z-index:10;
+      }
+
+      &.token-coins::before { background-position:0% center; }
+      &.token-food::before  { background-position:33.33% center; }
+      &.token-seeds::before { background-position:66.66% center; }
+      &.token-water::before { background-position:100% center; }
+    }
+
+    .meeple {
+      width: 30%;
+      height: 38%;
+      margin-top: 2%;
+    }
+  }
+}
+
+
+
+
+.field .meeple {
+  width:50%;
+  height:auto;
+}
+
+.meeple {
+  position:relative;
+  z-index:10;
+
+  svg {
+    stroke:black;
+    stroke-width:2px;
+  }
+  &.meeple-ff0000 svg { fill:#dd3431; }
+  &.meeple-008000 svg { fill:#42c900; }
+  &.meeple-0000ff svg { fill:#1a82d7; }
+  &.meeple-ffa500 svg { fill:#efce03; }
+
+  &.selectable {
+    cursor:pointer;
+  }
+  &.meeple-ff0000.selectable:hover svg, &.meeple-ff0000.selected svg { fill:#b21c1e;}
+  &.meeple-008000.selectable:hover svg, &.meeple-008000.selected svg  { fill:#388f02;}
+  &.meeple-0000ff.selectable:hover svg, &.meeple-0000ff.selected svg  { fill:#08477c;}
+  &.meeple-ffa500.selectable:hover svg, &.meeple-ffa500.selected svg  { fill:#a18500;}
+}
+
+
+
+div#player-crops {
+  width:100%;
+  display:flex;
+  flex-flow:column;
+
+  div.player-crops {
+    order:1;
+    width:100%;
+    min-height:12vw;
+    background-color:#ebd5bd;
+    border:2px solid rgb(101, 49, 25);
+    box-shadow:5px 5px 5px rgb(101, 49, 25);
+    border-radius: 5px;
+    border-top-left-radius: 0px;
+    padding:8px;
+    margin-bottom:50px;
+    display:flex;
+    flex-flow:row;
+    flex-wrap:wrap;
+    position:relative;
+    --min-card-width: 10vw;
+    box-sizing: border-box;
+
+    & > div {
+      flex-grow:0;
+      height: 0px;
+      margin-right:5px;
+      width:10vw;
+      padding-bottom: 18.2%;
+    }
+
+    .crop div.crop-power-effect {
+      font-size: calc(var(--min-card-width) * 0.74 / 10);
+    }
+
+
+
+    .farmer-card {
+      background-image: url("img/players.jpg");
+      background-size: cover;
+      border-radius:5px;
+    }
+    &.player-ff0000 .farmer-card { background-position:0% 0%; }
+    &.player-008000 .farmer-card { background-position:33.33% 0%; }
+    &.player-0000ff .farmer-card { background-position:66.66% 0%; }
+    &.player-ffa500 .farmer-card { background-position:100% 0%; }
+
+
+    .player-name {
+      display: block;
+      position: absolute;
+      font-family: "BurbankBigCondensedBlack";
+      font-size: 25px;
+      text-align: center;
+      top: -37px;
+      left: -2px;
+      border: 2px solid rgb(101, 49, 25);
+      border-bottom: none;
+      background-color: #ebd5bd;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      padding: 5px 15px;
+      height: 25px;
+    }
+    &.player-ff0000 .player-name { color:#dd3431; }
+    &.player-008000 .player-name { color:#42c900; }
+    &.player-0000ff .player-name { color:#1a82d7; }
+    &.player-ffa500 .player-name { color:#efce03; }
+
+
+/*
+    &.player-ff0000 .crop-power-box svg path { fill:#dd3431; }
+    &.player-008000 .crop-power-box svg path { fill:#42c900; }
+    &.player-0000ff .crop-power-box svg path { fill:#1a82d7; }
+    &.player-ffa500 .crop-power-box svg path { fill:#efce03; }
+*/
+  }
+}

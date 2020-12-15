@@ -47,4 +47,14 @@ class action_mutantcrops extends APP_GameAction
     $this->game->playerSow($cropId);
     self::ajaxResponse();
   }
+
+  public function grow()
+  {
+    self::setAjaxMode();
+    $cropId = (int) self::getArg('cropId', AT_posint, true);
+    $type = self::getArg('type', AT_alphanum, true);
+    $this->game->playerGrow($cropId, $type);
+    self::ajaxResponse();
+  }
+
 }

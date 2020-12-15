@@ -1,0 +1,235 @@
+$nbrCrops:15;
+
+
+div.crop {
+  grid-row: 1;
+  width:100%;
+  height:0%;
+  position:relative;
+  padding-bottom: var(--ratio-percent);
+  border-radius: 5%;
+
+  &.selectable::before {
+    content:'';
+    position:absolute;
+    width:99%;
+    height:99%;
+    cursor:pointer;
+    background-color: rgba(255,255,255,0.3);
+    border-radius:5%;
+    z-index:5;
+    border:3px dashed white;
+  }
+
+  &.selectable:hover::before {
+    border: 3px solid red;
+    background-color: rgba(255,255,255,0.6);
+  }
+
+
+  // Frame of the card
+  div.crop-frame {
+    position:absolute;
+    top:0;
+    left:0;
+    z-index:2;
+    width:100%;
+    height:100%;
+    border-radius:5%/3%;;
+    border:1px solid black;
+    background-image:url("img/crop-frame.png");
+    background-size:cover;
+  }
+
+
+  // Image of the crop
+  div.crop-background {
+    position: absolute;
+    top: 8.5%;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    height: 65%;
+    background-image: url("img/crops.jpg");
+    background-size: 1600%;
+  }
+
+  @for $i from 0 through $nbrCrops {
+    &.crop-#{$i} .crop-background { background-position:$i * 100% / $nbrCrops 0%; }
+  }
+
+
+
+  /*****************
+   * Name, seeds, power costs and gains
+   */
+  .crop-name, .crop-seeds,.crop-power-cost, .crop-power-gain {
+    position: absolute;
+    z-index: 3;
+    font-size: calc(var(--min-card-width) * 1.6 / 10);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "BurbankBigCondensedBlack";
+    color: white;
+    text-transform: uppercase;
+    text-shadow: rgb(101, 49, 25) 3px 0px 0px, rgb(101, 49, 25) 2.83487px 0.981584px 0px, rgb(101, 49, 25) 2.35766px 1.85511px 0px, rgb(101, 49, 25) 1.62091px 2.52441px 0px, rgb(101, 49, 25) 0.705713px 2.91581px 0px, rgb(101, 49, 25) -0.287171px 2.98622px 0px, rgb(101, 49, 25) -1.24844px 2.72789px 0px, rgb(101, 49, 25) -2.07227px 2.16926px 0px, rgb(101, 49, 25) -2.66798px 1.37182px 0px, rgb(101, 49, 25) -2.96998px 0.42336px 0px, rgb(101, 49, 25) -2.94502px -0.571704px 0px, rgb(101, 49, 25) -2.59586px -1.50383px 0px, rgb(101, 49, 25) -1.96093px -2.27041px 0px, rgb(101, 49, 25) -1.11013px -2.78704px 0px, rgb(101, 49, 25) -0.137119px -2.99686px 0px, rgb(101, 49, 25) 0.850987px -2.87677px 0px, rgb(101, 49, 25) 1.74541px -2.43999px 0px, rgb(101, 49, 25) 2.44769px -1.73459px 0px, rgb(101, 49, 25) 2.88051px -0.838247px 0px;
+  }
+
+
+  .crop-seeds {
+    top: 4%;
+    left: 7%;
+    width: 9%;
+    height: 9%;
+  }
+
+  .crop-name {
+    top: 4%;
+    left: 30%;
+    width: 70%;
+    height: 9%;
+  }
+
+  .crop-power-cost {
+    top: 71%;
+    left: 6%;
+    width: 9%;
+    height: 9%;
+    &.power-2 { left: 51%; }
+  }
+
+  .crop-power-gain {
+    top: 70.7%;
+    left: 30%;
+    width: 9%;
+    height: 9%;
+    color:rgb(101, 49, 25);
+    text-shadow: none;
+    font-family: "BurbankBigCondensedBold";
+    font-size:calc(var(--min-card-width) * 1.3 / 10);
+    &.power-2 { left: 76%; }
+  }
+
+
+  /////////////////////
+  // Special power
+  .crop-power-cost.power-3 {
+    top: 86%;
+    left: 4%;
+    z-index: 4;
+  }
+
+  .crop-power-cost-type {
+    position: absolute;
+    top: 84.5%;
+    left: 11%;
+    width: 15%;
+    height: 0%;
+    border-radius: 50%;
+    border: 2px solid rgb(101, 49, 25);
+    background-image: url("img/resources.png");
+    background-size: cover;
+    z-index: 3;
+    padding-bottom: 15%;
+
+    &.type-F { background-position:33.33% 0%; }
+    &.type-W { background-position:100% 0%; }
+  }
+
+  .crop-power-effect {
+    position: absolute;
+    top: 83%;
+    left: 29%;
+    z-index: 3;
+    width: 62%;
+    height: 14%;
+    font-family: "BurbankBigCondensedMedium";
+    font-size: calc(var(--min-card-width) * 0.84 / 10);
+    color: #5e3313;
+
+    span {
+      display: inline-block;
+      background-image: url("img/resources.png");
+      background-size: cover;
+      width: 10%;
+      height: 28%;
+      vertical-align: top;
+      margin-top: -3px;
+      border-radius: 50%;
+      border: 2px solid rgb(101, 49, 25);
+
+      &.coin { background-position:0% 0%; }
+      &.food { background-position:33.33% 0%; }
+      &.seed { background-position:67.5% 0%; }
+      &.water { background-position:100% 0%; }
+    }
+  }
+
+
+
+
+  /**********
+   * Zones to water/feed
+   */
+
+   .crop-power-box {
+     display:none;
+     top: 69.8%;
+     left: 13%;
+     &.power-food { left: 59%; }
+     width: 36%;
+     height: 9%;
+     background: rgba(255,255,255,0.3);
+     border: 2px dashed white;
+     position: absolute;
+     z-index: 10;
+     border-radius: 15%/50%;
+     cursor:pointer;
+     animation:borderBlink 0.9s infinite;
+
+     &.selectable {
+       display:block;
+
+       &:hover {
+         border:1px solid red !important;
+         background: rgba(255,255,255,0.5);
+         animation-play-state: paused;
+       }
+     }
+
+
+     svg {
+       display:none;
+       height: 140%;
+       width: auto;
+       margin-top: -10%;
+       margin-left: -20%;
+       path {
+         fill:yellow;
+       }
+     }
+   }
+
+   &[data-water="1"] .crop-power-box.power-water, &[data-food="1"] .crop-power-box.power-food {
+     display:block;
+     animation:none;
+     background:none;
+     border:none;
+     svg { display:block; }
+   }
+}
+
+.dijitTooltip .crop {
+  width:var(--min-card-width);
+}
+
+
+
+div#mutantcrops-grid div.crop div.crop-power-effect {
+  font-size: calc(var(--min-card-width) * 0.7 / 10);
+}
+
+.dijitTooltip div.crop div.crop-power-effect {
+  font-size: calc(var(--min-card-width) * 0.66 / 10);
+}

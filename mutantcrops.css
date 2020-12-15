@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /**
  *------
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
@@ -12,35 +13,41 @@
  * MutantCrops stylesheet
  *
  */
-
-
 @font-face {
   font-family: "BurbankBigCondensedBlack";
-  src: url("img/fonts/BurbankBigCondensed-Black.otf") format("opentype");
-}
-
+  src: url("img/fonts/BurbankBigCondensed-Black.otf") format("opentype"); }
 @font-face {
   font-family: "BurbankBigCondensedBold";
-  src: url("img/fonts/BurbankBigCondensed-Bold.otf") format("opentype");
-}
-
+  src: url("img/fonts/BurbankBigCondensed-Bold.otf") format("opentype"); }
 @font-face {
   font-family: "BurbankBigCondensedMedium";
-  src: url("img/fonts/BurbankBigCondensed-Medium.otf") format("opentype");
-}
-
+  src: url("img/fonts/BurbankBigCondensed-Medium.otf") format("opentype"); }
 :root {
   --spacing: 12px;
   --ratio-percent: 155.55%;
-  --nbr-crops:16;
-}
+  --nbr-crops:16; }
 
+@keyframes borderBlink {
+  0% {
+    border-color: white;
+    border-style: dashed; }
+  49% {
+    border-color: white; }
+  50% {
+    border-color: red; }
+  99% {
+    border-color: red; }
+  100% {
+    border-color: white;
+    border-style: dashed; } }
 div#board {
-  display:flex;
+  display: flex;
   justify-content: flex-start;
   align-items: center;
-  flex-direction: column;
-}
+  flex-direction: column; }
+
+.dijitTooltip {
+  --min-card-width: 20vw; }
 
 div#mutantcrops-grid {
   --min-card-width: 8vw;
@@ -49,473 +56,497 @@ div#mutantcrops-grid {
   grid-column-gap: var(--spacing);
   grid-template-rows: repeat(3, auto);
   grid-row-gap: var(--spacing);
-  grid-auto-rows: auto;
-}
-
-@media (max-width: 1500px) {
-  div#mutantcrops-grid {
-    --min-card-width: 10vw;
-  }
-}
-
-@media (max-width: 980px) {
-  div#mutantcrops-grid {
-    --min-card-width: 15vw;
-  }
-}
-
-
-.dijitTooltip {
-  --min-card-width: 20vw;
-}
-
-
-div#mutantcrops-grid div#crops-deck,
-div#mutantcrops-grid .field {
-  width:100%;
-  height:0%;
-  position:relative;
-  padding-bottom: var(--ratio-percent);
-  background-size:cover;
-  border-radius:5%;
-  border:1px solid black;
-}
-
-
-div#mutantcrops-grid div#crops-deck {
-  grid-row: 1;
-  grid-column: 2;
-  background-image:url("img/crops-back.jpg");
-}
+  grid-auto-rows: auto; }
+  @media (max-width: 1500px) {
+    div#mutantcrops-grid {
+      --min-card-width: 10vw; } }
+  @media (max-width: 980px) {
+    div#mutantcrops-grid {
+      --min-card-width: 15vw; } }
+  div#mutantcrops-grid div#crops-deck, div#mutantcrops-grid .field {
+    width: 100%;
+    height: 0%;
+    position: relative;
+    padding-bottom: var(--ratio-percent);
+    background-size: cover;
+    border-radius: 5%/3%;
+    border: 1px solid black; }
+  div#mutantcrops-grid div#crops-deck {
+    grid-row: 1;
+    grid-column: 2;
+    background-image: url("img/crops-back.jpg"); }
+  div#mutantcrops-grid div#crop-0 {
+    grid-column: 3; }
+  div#mutantcrops-grid div#crop-1 {
+    grid-column: 4; }
+  div#mutantcrops-grid div#crop-2 {
+    grid-column: 5; }
+  div#mutantcrops-grid div#crop-3 {
+    grid-column: 6; }
+  div#mutantcrops-grid #field-0 {
+    grid-row: 2;
+    grid-column: 1; }
+  div#mutantcrops-grid #field-1 {
+    grid-row: 2;
+    grid-column: 2; }
+  div#mutantcrops-grid #field-2 {
+    grid-row: 2;
+    grid-column: 3; }
+  div#mutantcrops-grid #field-3 {
+    grid-row: 3;
+    grid-column: 1; }
+  div#mutantcrops-grid #field-4 {
+    grid-row: 3;
+    grid-column: 2; }
+  div#mutantcrops-grid #field-5 {
+    grid-row: 3;
+    grid-column: 3; }
+  div#mutantcrops-grid #field-6 {
+    grid-row: 2;
+    grid-column: 4; }
+  div#mutantcrops-grid #field-7 {
+    grid-row: 2;
+    grid-column: 5; }
+  div#mutantcrops-grid #field-8 {
+    grid-row: 2;
+    grid-column: 6; }
+  div#mutantcrops-grid #field-9 {
+    grid-row: 3;
+    grid-column: 4; }
+  div#mutantcrops-grid #field-10 {
+    grid-row: 3;
+    grid-column: 5; }
+  div#mutantcrops-grid #field-11 {
+    grid-row: 3;
+    grid-column: 6; }
+  div#mutantcrops-grid .field {
+    position: relative;
+    background-image: url("img/fields.jpg"); }
+    div#mutantcrops-grid .field.field-active > div {
+      position: absolute;
+      width: 90%;
+      height: 40%;
+      left: 5%;
+      border: 2px dotted white;
+      border-radius: 5%;
+      display: flex;
+      justify-content: center;
+      align-items: center; }
+      div#mutantcrops-grid .field.field-active > div:nth-child(1) {
+        top: 2%; }
+      div#mutantcrops-grid .field.field-active > div:nth-child(2) {
+        top: 51%; }
+      div#mutantcrops-grid .field.field-active > div.selectable {
+        background-color: rgba(255, 255, 255, 0.2);
+        cursor: pointer; }
+        div#mutantcrops-grid .field.field-active > div.selectable:hover {
+          background-color: rgba(255, 255, 255, 0.5);
+          border: 3px solid red; }
+    div#mutantcrops-grid .field.stage-1 {
+      background-position: 0% 0%; }
+    div#mutantcrops-grid .field.stage-2 {
+      background-position: 5.8823529412% 0%; }
+    div#mutantcrops-grid .field.stage-3 {
+      background-position: 11.7647058824% 0%; }
+    div#mutantcrops-grid .field.field-0 {
+      background-position: 17.6470588235% 0%; }
+    div#mutantcrops-grid .field.field-1 {
+      background-position: 23.5294117647% 0%; }
+    div#mutantcrops-grid .field.field-2 {
+      background-position: 29.4117647059% 0%; }
+    div#mutantcrops-grid .field.field-3 {
+      background-position: 35.2941176471% 0%; }
+    div#mutantcrops-grid .field.field-4 {
+      background-position: 41.1764705882% 0%; }
+    div#mutantcrops-grid .field.field-5 {
+      background-position: 47.0588235294% 0%; }
+    div#mutantcrops-grid .field.field-6 {
+      background-position: 52.9411764706% 0%; }
+    div#mutantcrops-grid .field.field-7 {
+      background-position: 58.8235294118% 0%; }
+    div#mutantcrops-grid .field.field-8 {
+      background-position: 64.7058823529% 0%; }
+    div#mutantcrops-grid .field.field-9 {
+      background-position: 70.5882352941% 0%; }
+    div#mutantcrops-grid .field.field-10 {
+      background-position: 76.4705882353% 0%; }
+    div#mutantcrops-grid .field.field-11 {
+      background-position: 82.3529411765% 0%; }
+    div#mutantcrops-grid .field.field-12 {
+      background-position: 88.2352941176% 0%; }
+    div#mutantcrops-grid .field.field-13 {
+      background-position: 94.1176470588% 0%; }
+    div#mutantcrops-grid .field.field-14 {
+      background-position: 100% 0%; }
 
 div.crop {
   grid-row: 1;
-  width:100%;
-  height:0%;
-  position:relative;
+  width: 100%;
+  height: 0%;
+  position: relative;
   padding-bottom: var(--ratio-percent);
   border-radius: 5%;
-}
+  /*****************
+   * Name, seeds, power costs and gains
+   */
+  /**********
+   * Zones to water/feed
+   */ }
+  div.crop.selectable::before {
+    content: '';
+    position: absolute;
+    width: 99%;
+    height: 99%;
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 5%;
+    z-index: 5;
+    border: 3px dashed white; }
+  div.crop.selectable:hover::before {
+    border: 3px solid red;
+    background-color: rgba(255, 255, 255, 0.6); }
+  div.crop div.crop-frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    border-radius: 5%/3%;
+    border: 1px solid black;
+    background-image: url("img/crop-frame.png");
+    background-size: cover; }
+  div.crop div.crop-background {
+    position: absolute;
+    top: 8.5%;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    height: 65%;
+    background-image: url("img/crops.jpg");
+    background-size: 1600%; }
+  div.crop.crop-0 .crop-background {
+    background-position: 0% 0%; }
+  div.crop.crop-1 .crop-background {
+    background-position: 6.6666666667% 0%; }
+  div.crop.crop-2 .crop-background {
+    background-position: 13.3333333333% 0%; }
+  div.crop.crop-3 .crop-background {
+    background-position: 20% 0%; }
+  div.crop.crop-4 .crop-background {
+    background-position: 26.6666666667% 0%; }
+  div.crop.crop-5 .crop-background {
+    background-position: 33.3333333333% 0%; }
+  div.crop.crop-6 .crop-background {
+    background-position: 40% 0%; }
+  div.crop.crop-7 .crop-background {
+    background-position: 46.6666666667% 0%; }
+  div.crop.crop-8 .crop-background {
+    background-position: 53.3333333333% 0%; }
+  div.crop.crop-9 .crop-background {
+    background-position: 60% 0%; }
+  div.crop.crop-10 .crop-background {
+    background-position: 66.6666666667% 0%; }
+  div.crop.crop-11 .crop-background {
+    background-position: 73.3333333333% 0%; }
+  div.crop.crop-12 .crop-background {
+    background-position: 80% 0%; }
+  div.crop.crop-13 .crop-background {
+    background-position: 86.6666666667% 0%; }
+  div.crop.crop-14 .crop-background {
+    background-position: 93.3333333333% 0%; }
+  div.crop.crop-15 .crop-background {
+    background-position: 100% 0%; }
+  div.crop .crop-name, div.crop .crop-seeds, div.crop .crop-power-cost, div.crop .crop-power-gain {
+    position: absolute;
+    z-index: 3;
+    font-size: calc(var(--min-card-width) * 1.6 / 10);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "BurbankBigCondensedBlack";
+    color: white;
+    text-transform: uppercase;
+    text-shadow: #653119 3px 0px 0px, #653119 2.83487px 0.981584px 0px, #653119 2.35766px 1.85511px 0px, #653119 1.62091px 2.52441px 0px, #653119 0.705713px 2.91581px 0px, #653119 -0.287171px 2.98622px 0px, #653119 -1.24844px 2.72789px 0px, #653119 -2.07227px 2.16926px 0px, #653119 -2.66798px 1.37182px 0px, #653119 -2.96998px 0.42336px 0px, #653119 -2.94502px -0.571704px 0px, #653119 -2.59586px -1.50383px 0px, #653119 -1.96093px -2.27041px 0px, #653119 -1.11013px -2.78704px 0px, #653119 -0.137119px -2.99686px 0px, #653119 0.850987px -2.87677px 0px, #653119 1.74541px -2.43999px 0px, #653119 2.44769px -1.73459px 0px, #653119 2.88051px -0.838247px 0px; }
+  div.crop .crop-seeds {
+    top: 4%;
+    left: 7%;
+    width: 9%;
+    height: 9%; }
+  div.crop .crop-name {
+    top: 4%;
+    left: 30%;
+    width: 70%;
+    height: 9%; }
+  div.crop .crop-power-cost {
+    top: 71%;
+    left: 6%;
+    width: 9%;
+    height: 9%; }
+    div.crop .crop-power-cost.power-2 {
+      left: 51%; }
+  div.crop .crop-power-gain {
+    top: 70.7%;
+    left: 30%;
+    width: 9%;
+    height: 9%;
+    color: #653119;
+    text-shadow: none;
+    font-family: "BurbankBigCondensedBold";
+    font-size: calc(var(--min-card-width) * 1.3 / 10); }
+    div.crop .crop-power-gain.power-2 {
+      left: 76%; }
+  div.crop .crop-power-cost.power-3 {
+    top: 86%;
+    left: 4%;
+    z-index: 4; }
+  div.crop .crop-power-cost-type {
+    position: absolute;
+    top: 84.5%;
+    left: 11%;
+    width: 15%;
+    height: 0%;
+    border-radius: 50%;
+    border: 2px solid #653119;
+    background-image: url("img/resources.png");
+    background-size: cover;
+    z-index: 3;
+    padding-bottom: 15%; }
+    div.crop .crop-power-cost-type.type-F {
+      background-position: 33.33% 0%; }
+    div.crop .crop-power-cost-type.type-W {
+      background-position: 100% 0%; }
+  div.crop .crop-power-effect {
+    position: absolute;
+    top: 83%;
+    left: 29%;
+    z-index: 3;
+    width: 62%;
+    height: 14%;
+    font-family: "BurbankBigCondensedMedium";
+    font-size: calc(var(--min-card-width) * 0.84 / 10);
+    color: #5e3313; }
+    div.crop .crop-power-effect span {
+      display: inline-block;
+      background-image: url("img/resources.png");
+      background-size: cover;
+      width: 10%;
+      height: 28%;
+      vertical-align: top;
+      margin-top: -3px;
+      border-radius: 50%;
+      border: 2px solid #653119; }
+      div.crop .crop-power-effect span.coin {
+        background-position: 0% 0%; }
+      div.crop .crop-power-effect span.food {
+        background-position: 33.33% 0%; }
+      div.crop .crop-power-effect span.seed {
+        background-position: 67.5% 0%; }
+      div.crop .crop-power-effect span.water {
+        background-position: 100% 0%; }
+  div.crop .crop-power-box {
+    display: none;
+    top: 69.8%;
+    left: 13%;
+    width: 36%;
+    height: 9%;
+    background: rgba(255, 255, 255, 0.3);
+    border: 2px dashed white;
+    position: absolute;
+    z-index: 10;
+    border-radius: 15%/50%;
+    cursor: pointer;
+    animation: borderBlink 0.9s infinite; }
+    div.crop .crop-power-box.power-food {
+      left: 59%; }
+    div.crop .crop-power-box.selectable {
+      display: block; }
+      div.crop .crop-power-box.selectable:hover {
+        border: 1px solid red !important;
+        background: rgba(255, 255, 255, 0.5);
+        animation-play-state: paused; }
+    div.crop .crop-power-box svg {
+      display: none;
+      height: 140%;
+      width: auto;
+      margin-top: -10%;
+      margin-left: -20%; }
+      div.crop .crop-power-box svg path {
+        fill: yellow; }
+  div.crop[data-water="1"] .crop-power-box.power-water, div.crop[data-food="1"] .crop-power-box.power-food {
+    display: block;
+    animation: none;
+    background: none;
+    border: none; }
+    div.crop[data-water="1"] .crop-power-box.power-water svg, div.crop[data-food="1"] .crop-power-box.power-food svg {
+      display: block; }
+
 .dijitTooltip .crop {
-  width:var(--min-card-width);
-}
-
-div.crop.selectable::before {
-  content:'';
-  position:absolute;
-  width:99%;
-  height:99%;
-  cursor:pointer;
-  background-color: rgba(255,255,255,0.3);
-  border-radius:5%;
-  z-index:5;
-  border:3px dashed white;
-}
-
-div.crop.selectable:hover::before {
-  border: 3px solid red;
-  background-color: rgba(255,255,255,0.6);
-}
-
-
-
-div#mutantcrops-grid div#crop-0 {  grid-column: 3; }
-div#mutantcrops-grid div#crop-1 {  grid-column: 4; }
-div#mutantcrops-grid div#crop-2 {  grid-column: 5; }
-div#mutantcrops-grid div#crop-3 {  grid-column: 6; }
-
-
-div.crop div.crop-frame {
-  position:absolute;
-  top:0;
-  left:0;
-  z-index:2;
-  width:100%;
-  height:100%;
-  border-radius:5%;
-  border:1px solid black;
-  background-image:url("img/crop-frame.png");
-  background-size:cover;
-}
-
-
-div.crop div.crop-background {
-  position: absolute;
-  top: 8.5%;
-  left: 0;
-  z-index: 1;
-  width: 100%;
-  height: 65%;
-  background-image: url("img/crops.jpg");
-  background-size: 1600%;
-}
-
-div.crop.crop-0 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 0) 0%; }
-div.crop.crop-1 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 1) 0%; }
-div.crop.crop-2 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 2) 0%; }
-div.crop.crop-3 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 3) 0%; }
-div.crop.crop-4 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 4) 0%; }
-div.crop.crop-5 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 5) 0%; }
-div.crop.crop-6 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 6) 0%; }
-div.crop.crop-7 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 7) 0%; }
-div.crop.crop-8 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 8) 0%; }
-div.crop.crop-9 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 9) 0%; }
-div.crop.crop-10 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 10) 0%; }
-div.crop.crop-11 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 11) 0%; }
-div.crop.crop-12 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 12) 0%; }
-div.crop.crop-13 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 13) 0%; }
-div.crop.crop-14 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 14) 0%; }
-div.crop.crop-15 div.crop-background { background-position: calc(100% / (var(--nbr-crops) - 1) * 15) 0%; }
-
-
-div.crop div.crop-name,
-div.crop div.crop-seeds,
-div.crop div.crop-power-cost,
-div.crop div.crop-power-gain {
-  position: absolute;
-  z-index: 3;
-  font-size: calc(var(--min-card-width) * 1.6 / 10);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: "BurbankBigCondensedBlack";
-  color: white;
-  text-transform: uppercase;
-  text-shadow: rgb(101, 49, 25) 3px 0px 0px, rgb(101, 49, 25) 2.83487px 0.981584px 0px, rgb(101, 49, 25) 2.35766px 1.85511px 0px, rgb(101, 49, 25) 1.62091px 2.52441px 0px, rgb(101, 49, 25) 0.705713px 2.91581px 0px, rgb(101, 49, 25) -0.287171px 2.98622px 0px, rgb(101, 49, 25) -1.24844px 2.72789px 0px, rgb(101, 49, 25) -2.07227px 2.16926px 0px, rgb(101, 49, 25) -2.66798px 1.37182px 0px, rgb(101, 49, 25) -2.96998px 0.42336px 0px, rgb(101, 49, 25) -2.94502px -0.571704px 0px, rgb(101, 49, 25) -2.59586px -1.50383px 0px, rgb(101, 49, 25) -1.96093px -2.27041px 0px, rgb(101, 49, 25) -1.11013px -2.78704px 0px, rgb(101, 49, 25) -0.137119px -2.99686px 0px, rgb(101, 49, 25) 0.850987px -2.87677px 0px, rgb(101, 49, 25) 1.74541px -2.43999px 0px, rgb(101, 49, 25) 2.44769px -1.73459px 0px, rgb(101, 49, 25) 2.88051px -0.838247px 0px;
-}
-
-
-div.crop div.crop-seeds {
-  top: 4%;
-  left: 7%;
-  width: 9%;
-  height: 9%;
-}
-
-div.crop div.crop-name {
-  top: 4%;
-  left: 30%;
-  width: 70%;
-  height: 9%;
-}
-
-div.crop div.crop-power-cost {
-  top: 71%;
-  left: 6%;
-  width: 9%;
-  height: 9%;
-}
-div.crop div.crop-power-cost.power-2 { left: 51%; }
-
-div.crop div.crop-power-gain {
-  top: 70.7%;
-  left: 30%;
-  width: 9%;
-  height: 9%;
-  color:rgb(101, 49, 25);
-  text-shadow: none;
-  font-family: "BurbankBigCondensedBold";
-  font-size:calc(var(--min-card-width) * 1.3 / 10);
-}
-div.crop div.crop-power-gain.power-2 { left: 76%; }
-
-
-div.crop div.crop-power-cost.power-3 {
-  top: 86%;
-  left: 4%;
-  z-index: 4;
-}
-
-div.crop div.crop-power-cost-type {
-  position: absolute;
-  top: 84.5%;
-  left: 11%;
-  width: 15%;
-  height: 0%;
-  border-radius: 50%;
-  border: 2px solid rgb(101, 49, 25);
-  background-image: url("img/resources.png");
-  background-size: cover;
-  z-index: 3;
-  padding-bottom: 15%;
-}
-
-div.crop div.crop-power-cost-type.type-F { background-position:33.33% 0%; }
-div.crop div.crop-power-cost-type.type-W { background-position:100% 0%; }
-
-
-div.crop div.crop-power-effect {
-  position: absolute;
-  top: 83%;
-  left: 29%;
-  z-index: 3;
-  width: 62%;
-  height: 14%;
-  font-family: "BurbankBigCondensedMedium";
-  font-size: calc(var(--min-card-width) * 0.84 / 10);
-  color: #5e3313;
-}
+  width: var(--min-card-width); }
 
 div#mutantcrops-grid div.crop div.crop-power-effect {
-  font-size: calc(var(--min-card-width) * 0.7 / 10);
-}
-
-/*
-@media (max-width: 1500px) {
-  div.crop div.crop-power-effect {
-    font-size: calc(var(--min-card-width) * 0.84 / 10);
-  }
-}
-*/
+  font-size: calc(var(--min-card-width) * 0.7 / 10); }
 
 .dijitTooltip div.crop div.crop-power-effect {
-  font-size: calc(var(--min-card-width) * 0.66 / 10);
-}
-
-div.crop div.crop-power-effect span {
-  display: inline-block;
-  background-image: url("img/resources.png");
-  background-size: cover;
-  width: 10%;
-  height: 28%;
-  vertical-align: top;
-  margin-top: -3px;
-  border-radius: 50%;
-  border: 2px solid rgb(101, 49, 25);
-}
-
-div.crop div.crop-power-effect span.coin { background-position:0% 0%; }
-div.crop div.crop-power-effect span.food { background-position:33.33% 0%; }
-div.crop div.crop-power-effect span.seed { background-position:67.5% 0%; }
-div.crop div.crop-power-effect span.water { background-position:100% 0%; }
-
-
-
-
-div#mutantcrops-grid #field-0 { grid-row: 2;  grid-column: 1; }
-div#mutantcrops-grid #field-1 { grid-row: 2;  grid-column: 2; }
-div#mutantcrops-grid #field-2 { grid-row: 2;  grid-column: 3; }
-div#mutantcrops-grid #field-3 { grid-row: 3;  grid-column: 1; }
-div#mutantcrops-grid #field-4 { grid-row: 3;  grid-column: 2; }
-div#mutantcrops-grid #field-5 { grid-row: 3;  grid-column: 3; }
-
-div#mutantcrops-grid #field-6 { grid-row: 2;  grid-column: 4; }
-div#mutantcrops-grid #field-7 { grid-row: 2;  grid-column: 5; }
-div#mutantcrops-grid #field-8 { grid-row: 2;  grid-column: 6; }
-
-div#mutantcrops-grid #field-9 { grid-row: 3;  grid-column: 4; }
-div#mutantcrops-grid #field-10 { grid-row: 3;  grid-column: 5; }
-div#mutantcrops-grid #field-11 { grid-row: 3;  grid-column: 6; }
-
-div#mutantcrops-grid .field {
-  --offsetFieldBackground:17;
-  position:relative;
-  background-image:url("img/fields.jpg");
-}
-
-div#mutantcrops-grid .field.field-active > div {
-  position:absolute;
-  width:90%;
-  height:40%;
-  left:5%;
-  border:2px dotted white;
-  border-radius: 5%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-div#mutantcrops-grid .field.field-active > div:nth-child(1) { top:2%; }
-div#mutantcrops-grid .field.field-active > div:nth-child(2) { top:51%; }
-
-
-div#mutantcrops-grid .field.field-active > div.selectable {
-  background-color:rgba(255,255,255,0.2);
-  cursor:pointer;
-}
-
-div#mutantcrops-grid .field.field-active > div.selectable:hover {
-  background-color:rgba(255,255,255,0.5);
-  border: 3px solid red;
-}
-
-div#mutantcrops-grid .stage-1 { background-position:calc(100% / var(--offsetFieldBackground) * 0) 0%; }
-div#mutantcrops-grid .stage-2 { background-position:calc(100% / var(--offsetFieldBackground) * 1) 0%; }
-div#mutantcrops-grid .stage-3 { background-position:calc(100% / var(--offsetFieldBackground) * 2) 0%; }
-
-div#mutantcrops-grid .field.field-0 { background-position:calc(100% / var(--offsetFieldBackground) * 3) 0%; }
-div#mutantcrops-grid .field.field-1 { background-position:calc(100% / var(--offsetFieldBackground) * 4) 0%; }
-div#mutantcrops-grid .field.field-2 { background-position:calc(100% / var(--offsetFieldBackground) * 5) 0%; }
-div#mutantcrops-grid .field.field-3 { background-position:calc(100% / var(--offsetFieldBackground) * 6) 0%; }
-div#mutantcrops-grid .field.field-4 { background-position:calc(100% / var(--offsetFieldBackground) * 7) 0%; }
-div#mutantcrops-grid .field.field-5 { background-position:calc(100% / var(--offsetFieldBackground) * 8) 0%; }
-div#mutantcrops-grid .field.field-6 { background-position:calc(100% / var(--offsetFieldBackground) * 9) 0%; }
-div#mutantcrops-grid .field.field-7 { background-position:calc(100% / var(--offsetFieldBackground) * 10) 0%; }
-div#mutantcrops-grid .field.field-8 { background-position:calc(100% / var(--offsetFieldBackground) * 11) 0%; }
-div#mutantcrops-grid .field.field-9 { background-position:calc(100% / var(--offsetFieldBackground) * 12) 0%; }
-div#mutantcrops-grid .field.field-10 { background-position:calc(100% / var(--offsetFieldBackground) * 13) 0%; }
-div#mutantcrops-grid .field.field-11 { background-position:calc(100% / var(--offsetFieldBackground) * 14) 0%; }
-div#mutantcrops-grid .field.field-12 { background-position:calc(100% / var(--offsetFieldBackground) * 15) 0%; }
-div#mutantcrops-grid .field.field-13 { background-position:calc(100% / var(--offsetFieldBackground) * 16) 0%; }
-div#mutantcrops-grid .field.field-14 { background-position:calc(100% / var(--offsetFieldBackground) * 16) 0%; }
-
+  font-size: calc(var(--min-card-width) * 0.66 / 10); }
 
 .player-panel {
   display: flex;
   flex-flow: row;
-  padding:5px;
-}
-
-.player-panel .farmer-card {
-  flex: 1;
-  height: 0px;
-  padding-bottom: 53%;
-  background-image: url("img/players.jpg");
-  background-size: cover;
-  border-radius:5px;
-}
-.player-panel.player-1 .farmer-card { background-position:0% 0%; }
-.player-panel.player-2 .farmer-card { background-position:33.33% 0%; }
-.player-panel.player-3 .farmer-card { background-position:66.66% 0%; }
-.player-panel.player-4 .farmer-card { background-position:100% 0%; }
-
-.player-panel .tokens-container {
-  flex:2;
-  display:flex;
-  flex-flow:row;
-  flex-wrap:wrap;
-  justify-content: space-around;
-  align-content: flex-start;
-}
-
-.player-panel .tokens-container .token {
-  position:relative;
-  width:40%;
-  height:30%;
-  display:flex;
-  justify-content: flex-end;
-  align-items: center;
-  font-family: "BurbankBigCondensedBlack";
-  font-size: 1.5em;
-  color: #5e3313;
-}
-
-.player-panel .tokens-container .token::before {
-  content: '';
-  display: block;
-  position: absolute;
-  left: 0.2em;
-  top: 0;
-  width: 50%;
-  height: 100%;
-  background-image: url('img/resources.png');
-  background-size: 400%;
-  background-repeat: no-repeat;
-  z-index:10;
-}
-.player-panel .tokens-container .token.token-coins::before { background-position:0% center; }
-.player-panel .tokens-container .token.token-food::before  { background-position:33.33% center; }
-.player-panel .tokens-container .token.token-seeds::before { background-position:66.66% center; }
-.player-panel .tokens-container .token.token-water::before { background-position:100% center; }
-
-
-.meeple {
-  position:relative;
-  z-index:10;
-}
-
-.player-panel .tokens-container .meeple {
-  width: 30%;
-  height: 38%;
-  margin-top: 2%;
-}
+  padding: 5px; }
+  .player-panel .farmer-card {
+    flex: 1;
+    height: 0px;
+    padding-bottom: 53%;
+    background-image: url("img/players.jpg");
+    background-size: cover;
+    border-radius: 5px; }
+  .player-panel.player-ff0000 .farmer-card {
+    background-position: 0% 0%; }
+  .player-panel.player-008000 .farmer-card {
+    background-position: 33.33% 0%; }
+  .player-panel.player-0000ff .farmer-card {
+    background-position: 66.66% 0%; }
+  .player-panel.player-ffa500 .farmer-card {
+    background-position: 100% 0%; }
+  .player-panel .tokens-container {
+    flex: 2;
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-content: flex-start; }
+    .player-panel .tokens-container .token {
+      position: relative;
+      width: 40%;
+      height: 30%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: "BurbankBigCondensedBlack";
+      font-size: 1.5em;
+      color: #5e3313; }
+      .player-panel .tokens-container .token::before {
+        content: '';
+        display: block;
+        width: 45%;
+        height: 0;
+        padding-bottom: 45%;
+        background-image: url("img/resources.png");
+        background-size: cover;
+        background-repeat: no-repeat;
+        z-index: 10; }
+      .player-panel .tokens-container .token.token-coins::before {
+        background-position: 0% center; }
+      .player-panel .tokens-container .token.token-food::before {
+        background-position: 33.33% center; }
+      .player-panel .tokens-container .token.token-seeds::before {
+        background-position: 66.66% center; }
+      .player-panel .tokens-container .token.token-water::before {
+        background-position: 100% center; }
+    .player-panel .tokens-container .meeple {
+      width: 30%;
+      height: 38%;
+      margin-top: 2%; }
 
 .field .meeple {
-  width:50%;
-  height:auto;
-}
+  width: 50%;
+  height: auto; }
 
-.meeple svg {
-  stroke:black;
-  stroke-width:2px;
-}
-
-.meeple.meeple-1 svg { fill:#dd3431; }
-.meeple.meeple-2 svg { fill:#42c900; }
-.meeple.meeple-3 svg { fill:#1a82d7; }
-.meeple.meeple-4 svg { fill:#efce03; }
-
-
-.meeple.selectable { cursor:pointer; }
-.meeple.meeple-1.selectable:hover svg, .meeple.meeple-1.selected svg { fill:#b21c1e;}
-.meeple.meeple-2.selectable:hover svg, .meeple.meeple-2.selected svg  { fill:#388f02;}
-.meeple.meeple-3.selectable:hover svg, .meeple.meeple-3.selected svg  { fill:#08477c;}
-.meeple.meeple-4.selectable:hover svg, .meeple.meeple-4.selected svg  { fill:#a18500;}
-
+.meeple {
+  position: relative;
+  z-index: 10; }
+  .meeple svg {
+    stroke: black;
+    stroke-width: 2px; }
+  .meeple.meeple-ff0000 svg {
+    fill: #dd3431; }
+  .meeple.meeple-008000 svg {
+    fill: #42c900; }
+  .meeple.meeple-0000ff svg {
+    fill: #1a82d7; }
+  .meeple.meeple-ffa500 svg {
+    fill: #efce03; }
+  .meeple.selectable {
+    cursor: pointer; }
+  .meeple.meeple-ff0000.selectable:hover svg, .meeple.meeple-ff0000.selected svg {
+    fill: #b21c1e; }
+  .meeple.meeple-008000.selectable:hover svg, .meeple.meeple-008000.selected svg {
+    fill: #388f02; }
+  .meeple.meeple-0000ff.selectable:hover svg, .meeple.meeple-0000ff.selected svg {
+    fill: #08477c; }
+  .meeple.meeple-ffa500.selectable:hover svg, .meeple.meeple-ffa500.selected svg {
+    fill: #a18500; }
 
 div#player-crops {
-  width:100%;
-}
+  width: 100%;
+  display: flex;
+  flex-flow: column; }
+  div#player-crops div.player-crops {
+    order: 1;
+    width: 100%;
+    min-height: 12vw;
+    background-color: #ebd5bd;
+    border: 2px solid #653119;
+    box-shadow: 5px 5px 5px #653119;
+    border-radius: 5px;
+    border-top-left-radius: 0px;
+    padding: 8px;
+    margin-bottom: 50px;
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    position: relative;
+    --min-card-width: 10vw;
+    box-sizing: border-box;
+    /*
+        &.player-ff0000 .crop-power-box svg path { fill:#dd3431; }
+        &.player-008000 .crop-power-box svg path { fill:#42c900; }
+        &.player-0000ff .crop-power-box svg path { fill:#1a82d7; }
+        &.player-ffa500 .crop-power-box svg path { fill:#efce03; }
+    */ }
+    div#player-crops div.player-crops > div {
+      flex-grow: 0;
+      height: 0px;
+      margin-right: 5px;
+      width: 10vw;
+      padding-bottom: 18.2%; }
+    div#player-crops div.player-crops .crop div.crop-power-effect {
+      font-size: calc(var(--min-card-width) * 0.74 / 10); }
+    div#player-crops div.player-crops .farmer-card {
+      background-image: url("img/players.jpg");
+      background-size: cover;
+      border-radius: 5px; }
+    div#player-crops div.player-crops.player-ff0000 .farmer-card {
+      background-position: 0% 0%; }
+    div#player-crops div.player-crops.player-008000 .farmer-card {
+      background-position: 33.33% 0%; }
+    div#player-crops div.player-crops.player-0000ff .farmer-card {
+      background-position: 66.66% 0%; }
+    div#player-crops div.player-crops.player-ffa500 .farmer-card {
+      background-position: 100% 0%; }
+    div#player-crops div.player-crops .player-name {
+      display: block;
+      position: absolute;
+      font-family: "BurbankBigCondensedBlack";
+      font-size: 25px;
+      text-align: center;
+      top: -37px;
+      left: -2px;
+      border: 2px solid #653119;
+      border-bottom: none;
+      background-color: #ebd5bd;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      padding: 5px 15px;
+      height: 25px; }
+    div#player-crops div.player-crops.player-ff0000 .player-name {
+      color: #dd3431; }
+    div#player-crops div.player-crops.player-008000 .player-name {
+      color: #42c900; }
+    div#player-crops div.player-crops.player-0000ff .player-name {
+      color: #1a82d7; }
+    div#player-crops div.player-crops.player-ffa500 .player-name {
+      color: #efce03; }
 
-div.player-crops {
-  width:100%;
-  min-height:12vw;
-  background-color:#ebd5bd;
-  border:2px solid rgb(101, 49, 25);
-  box-shadow:5px 5px 5px rgb(101, 49, 25);
-  border-radius: 5px;
-  border-top-left-radius: 0px;
-  padding:8px;
-  margin-bottom:50px;
-  display:flex;
-  flex-flow:row;
-  flex-wrap:wrap;
-  position:relative;
-  --min-card-width: 10vw;
-  box-sizing: border-box;
-}
-
-div.player-crops > div {
-  flex-grow:0;
-  height: 0px;
-  margin-right:5px;
-  width:10vw;
-  padding-bottom: 18.2%;
-}
-
-div.player-crops div.crop div.crop-power-effect {
-  font-size: calc(var(--min-card-width) * 0.74 / 10);
-}
-
-
-
-div.player-crops .farmer-card {
-  background-image: url("img/players.jpg");
-  background-size: cover;
-  border-radius:5px;
-}
-div.player-crops.player-1 .farmer-card { background-position:0% 0%; }
-div.player-crops.player-2 .farmer-card { background-position:33.33% 0%; }
-div.player-crops.player-3 .farmer-card { background-position:66.66% 0%; }
-div.player-crops.player-4 .farmer-card { background-position:100% 0%; }
-
-div.player-crops .player-name {
-  display: block;
-  position: absolute;
-  font-family: "BurbankBigCondensedBlack";
-  font-size: 25px;
-  text-align: center;
-  top: -37px;
-  left: -2px;
-  border: 2px solid rgb(101, 49, 25);
-  border-bottom: none;
-  background-color: #ebd5bd;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  padding: 5px 15px;
-  height: 25px;
-}
-
-div.player-crops.player-1 .player-name { color:#dd3431; }
-div.player-crops.player-2 .player-name { color:#42c900; }
-div.player-crops.player-3 .player-name { color:#1a82d7; }
-div.player-crops.player-4 .player-name { color:#efce03; }
+/*# sourceMappingURL=mutantcrops.css.map */

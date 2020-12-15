@@ -1,0 +1,105 @@
+div#board {
+  display:flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
+}
+
+.dijitTooltip {
+  --min-card-width: 20vw;
+}
+
+
+div#mutantcrops-grid {
+  --min-card-width: 8vw;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(var(--min-card-width), 1fr));
+  grid-column-gap: var(--spacing);
+  grid-template-rows: repeat(3, auto);
+  grid-row-gap: var(--spacing);
+  grid-auto-rows: auto;
+
+  @media (max-width: 1500px) {
+    --min-card-width: 10vw;
+  }
+  @media (max-width: 980px) {
+    --min-card-width: 15vw;
+  }
+
+  div#crops-deck, .field {
+    width:100%;
+    height:0%;
+    position:relative;
+    padding-bottom: var(--ratio-percent);
+    background-size:cover;
+    border-radius:5%/3%;
+    border:1px solid black;
+  }
+
+
+  div#crops-deck {
+    grid-row: 1;
+    grid-column: 2;
+    background-image:url("img/crops-back.jpg");
+  }
+
+  div#crop-0 {  grid-column: 3; }
+  div#crop-1 {  grid-column: 4; }
+  div#crop-2 {  grid-column: 5; }
+  div#crop-3 {  grid-column: 6; }
+
+
+  #field-0 { grid-row: 2;  grid-column: 1; }
+  #field-1 { grid-row: 2;  grid-column: 2; }
+  #field-2 { grid-row: 2;  grid-column: 3; }
+  #field-3 { grid-row: 3;  grid-column: 1; }
+  #field-4 { grid-row: 3;  grid-column: 2; }
+  #field-5 { grid-row: 3;  grid-column: 3; }
+
+  #field-6 { grid-row: 2;  grid-column: 4; }
+  #field-7 { grid-row: 2;  grid-column: 5; }
+  #field-8 { grid-row: 2;  grid-column: 6; }
+
+  #field-9 { grid-row: 3;  grid-column: 4; }
+  #field-10 { grid-row: 3;  grid-column: 5; }
+  #field-11 { grid-row: 3;  grid-column: 6; }
+
+  .field {
+    position:relative;
+    background-image:url("img/fields.jpg");
+
+    &.field-active > div {
+      position:absolute;
+      width:90%;
+      height:40%;
+      left:5%;
+      border:2px dotted white;
+      border-radius: 5%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      &:nth-child(1) { top:2%; }
+      &:nth-child(2) { top:51%; }
+
+      &.selectable {
+        background-color:rgba(255,255,255,0.2);
+        cursor:pointer;
+        &:hover {
+          background-color:rgba(255,255,255,0.5);
+          border: 3px solid red;
+        }
+      }
+    }
+
+    $nbrFields:17;
+
+    &.stage-1 { background-position:(0 * 100% / $nbrFields) 0%; }
+    &.stage-2 { background-position:(1 * 100% / $nbrFields) 0%; }
+    &.stage-3 { background-position:(2 * 100% / $nbrFields) 0%; }
+
+    @for $i from 3 through $nbrFields {
+      &.field-#{$i - 3} { background-position:$i * 100% / $nbrFields 0%; }
+    }
+  }
+}

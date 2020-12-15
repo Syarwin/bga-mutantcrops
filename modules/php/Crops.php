@@ -60,6 +60,9 @@ class Crops extends Helpers\Pieces
     }
     self::create($crops, 'deck');
     self::shuffle('deck');
+
+    self::move(17, "hand", array_keys($players)[0]);
+    self::move(18, "hand", array_keys($players)[1]);
     self::pickForLocation(count($players) == 4? 4 : 3, 'deck', 'board');
   }
 
@@ -84,14 +87,9 @@ class Crops extends Helpers\Pieces
     return self::getInLocation("hand", $pId);
   }
 
-/*
 
-  public function getSowedCrops($pId)
+  public function growCrop($cropId, $type)
   {
-    return [];
+    self::DB()->update([$type => 1])->run($cropId);
   }
-
-
-
-*/
 }
